@@ -745,6 +745,7 @@ async function homeScore(id){
     const granted=await promptForPin();
     if(granted){
       pinVerified=true;
+      syncNavState(); // re-evaluate nav now that PIN/organiser status is known
       const screen=S.pools?'poules':S.draft?'draw':'setup';
       showScreen(screen);
       startPolling();
@@ -1805,6 +1806,7 @@ async function submitPin(){
         if(competitionId)localStorage.setItem('fence_organiser_'+competitionId,'1');
         pinVerified=true;
         closeModal('pin-modal');
+        syncNavState(); // update nav immediately so Setup tab appears
         if(_pinCallback){_pinCallback(true);_pinCallback=null;}
       }else{
         const errEl=document.getElementById('pin-error');
