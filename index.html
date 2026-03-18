@@ -718,7 +718,7 @@ async function loadHomeScreen(){
           </div>
         </div>
         <div class="home-comp-actions">
-          ${isActive?`<button class="home-comp-btn score" onclick="homeScore('${comp.id}')">Score</button>`:''}
+          <button class="home-comp-btn score" onclick="homeScore('${comp.id}')">${isActive?'Score':'Edit'}</button>
           <button class="home-comp-btn watch" onclick="homeWatch('${comp.id}')">Watch</button>
         </div>
       </div>`;
