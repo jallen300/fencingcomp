@@ -1143,13 +1143,17 @@ function directScore(side,mx){
   if(v>mx)v=mx;
   el.value=v;
   if(side===1)TS.s1=v;else TS.s2=v;
-  // update the big display without full re-render
-  const d1=document.getElementById('score-disp-1');
-  const d2=document.getElementById('score-disp-2');
-  if(d1)d1.textContent=TS.s1;
-  if(d2)d2.textContent=TS.s2;
-  if(d1)d1.className='score-num '+(TS.s1>TS.s2?'leading':'');
-  if(d2)d2.className='score-num '+(TS.s2>TS.s1?'leading':'');
+  // Full re-render so +/- buttons and Confirm update correctly
+  const{type,pi,bi,ri,mi}=AB;
+  let f1,f2,done,mx2;
+  if(type==='poule'){const b=S.pools[pi].bouts[bi];f1=fById(b.f1);f2=fById(b.f2);done=b.done;mx2=5;}
+  else{const m=S.de.rounds[ri].matches[mi];f1=fById(m.top.fid);f2=fById(m.bot.fid);done=m.winner!=null;mx2=15;}
+  renderBoutModal(f1,f2,mx2,done);
+  // Re-focus the input that was being typed in (re-render clears focus)
+  setTimeout(()=>{
+    const refocus=document.getElementById('direct-s'+(side===1?'1':'2'));
+    if(refocus){refocus.focus();const len=refocus.value.length;refocus.setSelectionRange(len,len);}
+  },0);
 }
 
 function adj(side,delta,mx){
