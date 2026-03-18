@@ -347,12 +347,21 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div style="height:16px;"></div>
     <button class="btn btn-accent" id="draw-btn" onclick="generateDraw()" disabled style="margin:0 20px;width:calc(100% - 40px);">Preview Draw</button>
     <div style="height:8px;"></div>
-    <div id="pin-reminder" style="display:none;align-items:center;justify-content:space-between;background:var(--accent-dim);border:1px solid rgba(232,244,34,.3);border-radius:12px;padding:12px 16px;margin:0 20px 0;">
-      <div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--grey2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Competition PIN</div>
-        <div id="pin-reminder-value" style="font-family:var(--mono);font-size:28px;color:var(--accent);letter-spacing:.15em;line-height:1;">----</div>
+    <div id="pin-reminder" style="display:none;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:12px 16px;margin:0 20px 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--grey2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Scorer PIN</div>
+          <div id="pin-reminder-value" style="font-family:var(--mono);font-size:28px;color:var(--accent);letter-spacing:.15em;line-height:1;">----</div>
+        </div>
+        <div style="font-size:11px;color:var(--grey2);max-width:130px;text-align:right;line-height:1.4;">Share with everyone recording results</div>
       </div>
-      <div style="font-size:11px;color:var(--grey2);max-width:120px;text-align:right;line-height:1.4;">Share with scorers so they can record results</div>
+      <div style="border-top:1px solid var(--line);padding-top:8px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Organiser PIN</div>
+          <div id="pin-reminder-org-value" style="font-family:var(--mono);font-size:28px;color:var(--orange);letter-spacing:.15em;line-height:1;">----</div>
+        </div>
+        <div style="font-size:11px;color:var(--grey2);max-width:130px;text-align:right;line-height:1.4;">Keep private — use to reclaim organiser access</div>
+      </div>
     </div>
     <div style="display:flex;gap:10px;margin:0 20px;">
       <button class="btn btn-ghost btn-sm" onclick="changeBackend()" style="flex:1;">⚙ Change URL</button>
@@ -376,6 +385,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <button class="btn btn-accent" onclick="confirmDraw()">✓ Confirm Draw &amp; Start Poules</button>
       <div style="height:8px;"></div>
       <button class="btn btn-ghost" onclick="reshuffleDraw()">↺ Re-shuffle Draw</button>
+    </div>
+    <div id="draw-reclaim-action" style="display:none;">
+      <button class="btn btn-ghost" onclick="openReclaimModal()" style="border-color:rgba(255,153,68,.4);color:var(--orange);">🔑 Reclaim organiser access</button>
     </div>
   </div>
   <div style="height:20px;"></div>
@@ -488,16 +500,18 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <div class="modal-overlay" id="pin-reveal-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">Your Competition PIN</div>
+    <div class="modal-title">Your Competition PINs</div>
     <div class="modal-body">
-      <div class="pin-display">
-        <div class="pin-label">Competition PIN</div>
+      <div class="pin-display" style="margin-bottom:12px;">
+        <div class="pin-label">Scorer PIN — share with everyone recording results</div>
         <div class="pin-value" id="pin-reveal-value">----</div>
-        <div class="pin-hint">Share this PIN with everyone who will be recording results today. They'll need it to enter scores.</div>
+        <div class="pin-hint">Share this with all your scorers via WhatsApp etc.</div>
       </div>
-      <p style="color:var(--grey2);font-size:13px;line-height:1.6;">
-        The PIN is also shown at the top of the Setup screen whenever you need it. Anyone without the PIN can still view the competition but cannot edit results.
-      </p>
+      <div class="pin-display" style="background:var(--surface2);border-color:rgba(255,255,255,.15);">
+        <div class="pin-label" style="color:var(--orange);">Organiser PIN — keep this private</div>
+        <div class="pin-value" id="pin-reveal-org-value" style="color:var(--orange);">----</div>
+        <div class="pin-hint">Only you need this. Use it to reclaim organiser access if you clear your browser cache.</div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-accent" onclick="closeModal('pin-reveal-modal');showScreen('draw');">View Draw →</button>
@@ -518,6 +532,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="modal-actions">
       <button class="btn btn-danger" onclick="doConfirmDraw()">Yes, overwrite everything</button>
       <button class="btn btn-ghost" onclick="closeModal('confirm-draw-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECLAIM ORGANISER MODAL -->
+<div class="modal-overlay" id="reclaim-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Reclaim Organiser Access</div>
+    <div class="modal-body">
+      <p style="color:var(--grey2);font-size:14px;line-height:1.6;margin-bottom:16px;">Enter your <strong style="color:var(--orange)">Organiser PIN</strong> to restore full access on this device.</p>
+      <div class="pin-input-row">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="reclaim-d1" oninput="reclaimDigitInput(this,1)">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="reclaim-d2" oninput="reclaimDigitInput(this,2)">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="reclaim-d3" oninput="reclaimDigitInput(this,3)">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="reclaim-d4" oninput="reclaimDigitInput(this,4)">
+      </div>
+      <div id="reclaim-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:8px;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-accent" onclick="submitReclaimPin()">Confirm</button>
+      <button class="btn btn-ghost" onclick="closeModal('reclaim-modal')">Cancel</button>
     </div>
   </div>
 </div>
@@ -552,7 +588,8 @@ let S={
   de:null,deComplete:false,screen:'setup',activePool:0,
 };
 let competitionId=localStorage.getItem('fence_comp_id')||null; // persistent per-device ID for this competition
-let competitionPin=localStorage.getItem('fence_comp_pin')||null; // PIN for this competition
+let competitionPin=localStorage.getItem('fence_comp_pin')||null; // scorer PIN
+let organiserPin=localStorage.getItem('fence_organiser_pin')||null; // organiser PIN (only shown once)
 // isOrganiser is a function — checks if this device created the current competition
 function isOrganiser(){
   if(!competitionId)return false;
@@ -576,7 +613,7 @@ async function pushState(logMsg){
   if(!backendUrl||spectatorMode)return;
   setSyncStatus('busy','Saving…');
   try{
-    const body={action:'write',state:S,name:S.compName||'Competition',logMessage:logMsg||'',pin:competitionPin||undefined};
+    const body={action:'write',state:S,name:S.compName||'Competition',logMessage:logMsg||'',pin:competitionPin||undefined,organiserPin:organiserPin||undefined};
     if(competitionId)body.id=competitionId;
     const resp=await fetch(backendUrl,{method:'POST',body:JSON.stringify(body)});
     const json=await resp.json();
@@ -926,6 +963,19 @@ function renderSetup(){
   drawBtn.textContent=S.pools?'Re-generate Draw':'Preview Draw';
   resetBtn.style.display=(S.pools||S.fencers.length)?'block':'none';
   if(S.compName)document.getElementById('comp-name').value=S.compName;
+  // PIN reminder — only show to organiser once draw is generated
+  const pinReminderEl=document.getElementById('pin-reminder');
+  if(pinReminderEl){
+    if(isOrganiser()&&S.draft&&competitionPin){
+      pinReminderEl.style.display='flex';
+      const pv=document.getElementById('pin-reminder-value');
+      if(pv)pv.textContent=competitionPin;
+      const ov=document.getElementById('pin-reminder-org-value');
+      if(ov)ov.textContent=organiserPin||'----';
+    }else{
+      pinReminderEl.style.display='none';
+    }
+  }
   renderLayoutChips();
   if(!S.fencers.length){list.innerHTML='<li style="padding:18px;text-align:center;color:var(--grey2);font-size:13px;">No fencers yet</li>';return;}
   list.innerHTML=sortedFencers().map(f=>`<li class="fencer-row">
@@ -975,16 +1025,26 @@ function generateDraw(){
   const sizes=getChosenLayout(sf.length);
   S.draft=clubSeparate(snakeAssign(sf,sizes),S.fencers);
   S.pools=null;S.de=null;S.deComplete=false;
-  // Generate a new PIN if we don't already have one for this competition
+  // Generate scorer + organiser PINs if not already set
   if(!competitionPin){
     competitionPin=String(Math.floor(1000+Math.random()*9000));
     localStorage.setItem('fence_comp_pin',competitionPin);
   }
+  if(!organiserPin){
+    // Make sure organiser PIN differs from scorer PIN
+    let op=String(Math.floor(1000+Math.random()*9000));
+    while(op===competitionPin)op=String(Math.floor(1000+Math.random()*9000));
+    organiserPin=op;
+    localStorage.setItem('fence_organiser_pin',organiserPin);
+  }
   // Mark this device as organiser for this competition
   localStorage.setItem('fence_organiser_'+competitionId,'1');
   save();enableNav('draw');
-  // Show PIN to organiser
-  document.getElementById('pin-reveal-value').textContent=competitionPin;
+  // Show both PINs to organiser
+  const srv=document.getElementById('pin-reveal-value');
+  const orv=document.getElementById('pin-reveal-org-value');
+  if(srv)srv.textContent=competitionPin;
+  if(orv)orv.textContent=organiserPin;
   openModal('pin-reveal-modal');
 }
 
@@ -1004,6 +1064,8 @@ function renderDraw(){
   // Show organiser-only actions only to the organiser
   const orgActions=document.getElementById('draw-organiser-actions');
   if(orgActions)orgActions.style.display=isOrganiser()?'block':'none';
+  const reclaimAction=document.getElementById('draw-reclaim-action');
+  if(reclaimAction)reclaimAction.style.display=(!isOrganiser()&&S.draft)?'block':'none';
   const container=document.getElementById('draw-container');
   const clashWarn=document.getElementById('clash-warn');
   const clashes=clashesIn(S.draft),clashIds=new Set(clashes.flatMap(c=>[c.a,c.b]));
@@ -1634,6 +1696,8 @@ async function doReset(){
   localStorage.setItem('fence_comp_id',competitionId);
   competitionPin=null;
   localStorage.removeItem('fence_comp_pin');
+  localStorage.removeItem('fence_organiser_pin');
+  organiserPin=null;
   if(oldCompId)localStorage.removeItem('fence_organiser_'+oldCompId);
   pinVerified=false;
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
@@ -1743,6 +1807,57 @@ function goHome(){
   document.getElementById('screen-connect').classList.add('active');
   const hb=document.getElementById('nav-home');if(hb)hb.classList.add('active');
   loadHomeScreen();
+}
+
+// ── RECLAIM ORGANISER ACCESS ──
+function openReclaimModal(){
+  ['reclaim-d1','reclaim-d2','reclaim-d3','reclaim-d4'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  const errEl=document.getElementById('reclaim-error');
+  if(errEl)errEl.style.display='none';
+  openModal('reclaim-modal');
+  setTimeout(()=>{const d=document.getElementById('reclaim-d1');if(d)d.focus();},200);
+}
+
+function reclaimDigitInput(el,pos){
+  let v=el.value.replace(/[^0-9]/g,'');
+  if(v.length>1)v=v.slice(-1);
+  el.value=v;
+  if(v&&pos<4){const next=document.getElementById('reclaim-d'+( pos+1));if(next)next.focus();}
+}
+
+async function submitReclaimPin(){
+  const pin=['reclaim-d1','reclaim-d2','reclaim-d3','reclaim-d4'].map(id=>{
+    const el=document.getElementById(id);return el?el.value.replace(/[^0-9]/g,''):'';
+  }).join('');
+  if(pin.length<4){
+    const errEl=document.getElementById('reclaim-error');
+    if(errEl){errEl.textContent='Please enter all 4 digits.';errEl.style.display='block';}
+    return;
+  }
+  try{
+    const resp=await fetch(backendUrl,{method:'POST',body:JSON.stringify({action:'verifyOrganiserPin',id:competitionId,pin})});
+    const json=await resp.json();
+    if(json.valid){
+      organiserPin=pin;
+      localStorage.setItem('fence_organiser_pin',pin);
+      if(competitionId)localStorage.setItem('fence_organiser_'+competitionId,'1');
+      closeModal('reclaim-modal');
+      renderDraw();
+      renderSetup();
+    }else{
+      const errEl=document.getElementById('reclaim-error');
+      if(errEl){errEl.textContent='Incorrect organiser PIN.';errEl.style.display='block';}
+      ['reclaim-d1','reclaim-d2','reclaim-d3','reclaim-d4'].forEach(id=>{
+        const el=document.getElementById(id);if(el)el.value='';
+      });
+      setTimeout(()=>{const d=document.getElementById('reclaim-d1');if(d)d.focus();},50);
+    }
+  }catch(e){
+    const errEl=document.getElementById('reclaim-error');
+    if(errEl){errEl.textContent='Connection error. Try again.';errEl.style.display='block';}
+  }
 }
 
 // ── SPECTATOR MODE ──
