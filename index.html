@@ -1129,9 +1129,9 @@ function renderBoutModal(f1,f2,mx,done){
       <div class="direct-score-divider">–</div>
       <input type="number" id="direct-s2" min="0" max="${mx}" value="${s2}" inputmode="numeric" onchange="directScore(2,${mx})" oninput="directScore(2,${mx})">
     </div></div>
-    <div id="bout-draw-error" style="display:${s1===s2&&(s1>0||done)?'block':'none'};text-align:center;font-size:13px;color:var(--red);padding:6px 0 2px;font-weight:500;">One fencer must win — scores can't be equal</div>`;
+    <div id="bout-draw-error" style="display:none;text-align:center;font-size:13px;color:var(--red);padding:6px 0 2px;font-weight:500;">One fencer must win — scores can't be equal</div>`;
   document.getElementById('bout-modal-actions').innerHTML=`
-    <button class="btn btn-accent" onclick="confirmBout()" ${s1===s2?'disabled':''}>Confirm Result</button>
+    <button class="btn btn-accent" onclick="confirmBout()">Confirm Result</button>
     ${done?`<button class="btn btn-ghost btn-sm" onclick="clearBout()">Clear Result</button>`:''}
     <button class="btn btn-ghost btn-sm" onclick="closeModal('bout-modal')">Cancel</button>`;
 }
