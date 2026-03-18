@@ -739,6 +739,7 @@ function startNewCompetition(){
   localStorage.removeItem('fence_comp_pin');
   localStorage.removeItem('fence_organiser_pin');
   localStorage.setItem('fence_organiser_'+competitionId,'1');
+  pinVerified=true; // organiser doesn't need PIN flow
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
   selectedLayout=null;
   document.getElementById('bottom-nav').style.display='flex';
@@ -1515,7 +1516,7 @@ function renderDE(){
         <div class="de-vs">VS</div>
         <div class="de-fencer">${m.bot.seed?`<div class="de-fencer-seed">Seed ${m.bot.seed}</div>`:''}<div class="de-fencer-name">${esc(f2.name)}</div>${f2.club?`<div class="de-fencer-club">${esc(f2.club)}</div>`:''}</div>
       </div>
-      <div style="padding:0 16px 16px;"><button class="btn btn-accent" onclick="openBout('de',-1,-1,${curRi},${curMi})">▶ Enter Score</button></div>
+      <div style="padding:0 16px 16px;">${!spectatorMode&&(pinVerified||isOrganiser())?`<button class="btn btn-accent" onclick="openBout('de',-1,-1,${curRi},${curMi})">▶ Enter Score</button>`:''}</div>
     </div>`;
   }
   const cols=rounds.map((round,ri)=>{
@@ -1529,7 +1530,7 @@ function renderDE(){
         return`<div class="b-slot ${isW?'winner':''}"><span class="b-seed">${m[side].seed||''}</span><span class="b-name">${esc(f?f.name.split(/\s+/).pop():'?')}</span>${score!=null?`<span class="b-score">${score}</span>`:''}</div>`;
       };
       const clickable=!m.bye&&m.top.fid&&m.bot.fid;
-      return`<div class="b-match ${isCur?'current':''} ${isDone?'done':''}" ${clickable?`onclick="openBout('de',-1,-1,${ri},${mi})"`:''}>
+      return`<div class="b-match ${isCur?'current':''} ${isDone?'done':''}" ${clickable&&!spectatorMode&&(pinVerified||isOrganiser())?`onclick="openBout('de',-1,-1,${ri},${mi})"`:''}>
         <div class="b-match-inner">${slot('top')}${slot('bot')}</div></div>`;
     }).join('');
     return`<div class="b-round"><div class="b-round-title">${esc(round.name)}</div><div class="b-col" style="gap:${gap}px;">${cards}</div></div>`;
@@ -1571,7 +1572,10 @@ function getFinalPlacements(){
   const pouleRanked=overallStandings().map(s=>s.id);
   const pouleRank=new Map(pouleRanked.map((id,i)=>[id,i]));
 
-  let nextPlace=size;
+  // Use actual fencer count for place numbering, not bracket size
+  // (bracket may be padded with byes for power-of-2)
+  const n=S.fencers.length;
+  let nextPlace=n;
 
   rounds.forEach((round,ri)=>{
     const isFinal=ri===finalRoundIdx;
@@ -2078,6 +2082,7 @@ window.addEventListener('load',async()=>{
     localStorage.setItem('fence_comp_id',competitionId);
   }
   // Always start on the home screen — it loads the competition directory
+  if(isOrganiser())pinVerified=true;
   showScreen('connect');
   loadHomeScreen();
 });
