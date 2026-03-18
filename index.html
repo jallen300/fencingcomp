@@ -610,6 +610,10 @@ function setSyncStatus(status,label){
   bar.className=status==='busy'?'syncing':status==='err'?'error':'';
   lbl.textContent=label||'';
 }
+let _saveDebounceTimer=null;
+let _pendingSave=false;
+let _saveRetryTimer=null;
+
 async function pushState(logMsg){
   if(!backendUrl||spectatorMode)return;
   setSyncStatus('busy','Saving…');
@@ -619,16 +623,38 @@ async function pushState(logMsg){
     const resp=await fetch(backendUrl,{method:'POST',body:JSON.stringify(body)});
     const json=await resp.json();
     if(!json.ok)throw new Error(json.error||'Write failed');
-    // Store the competition ID returned by the backend (important on first write)
     if(json.id&&json.id!==competitionId){
       competitionId=json.id;
       localStorage.setItem('fence_comp_id',competitionId);
     }
     lastStateHash=stateHash(S);
+    _pendingSave=false;
+    if(_saveRetryTimer){clearTimeout(_saveRetryTimer);_saveRetryTimer=null;}
     setSyncStatus('ok','Saved');
     setTimeout(()=>setSyncStatus('ok',''),2000);
-  }catch(e){setSyncStatus('err','Save failed');}
+  }catch(e){
+    setSyncStatus('err','Save failed — retrying…');
+    // Retry after 4 seconds automatically
+    if(!_saveRetryTimer){
+      _saveRetryTimer=setTimeout(()=>{
+        _saveRetryTimer=null;
+        pushState('retry');
+      },4000);
+    }
+  }
 }
+
+// Debounced save — coalesces rapid saves into one write after 800ms quiet period
+async function save(logMsg){
+  localStorage.setItem('fence_state_cache',JSON.stringify(S));
+  _pendingSave=true;
+  if(_saveDebounceTimer)clearTimeout(_saveDebounceTimer);
+  _saveDebounceTimer=setTimeout(()=>{
+    _saveDebounceTimer=null;
+    if(_pendingSave)pushState(logMsg);
+  },800);
+}
+
 async function pollState(){
   const url=spectatorMode?watchUrl:backendUrl;
   if(!url||isSyncing)return;
@@ -660,10 +686,7 @@ function stateHash(s){
   return JSON.stringify({compName,fencers,draft,pools,de,deComplete});
 }
 function startPolling(){if(pollTimer)clearInterval(pollTimer);pollTimer=setInterval(pollState,POLL_INTERVAL);}
-async function save(logMsg){
-  localStorage.setItem('fence_state_cache',JSON.stringify(S));
-  await pushState(logMsg);
-}
+
 function loadFromCache(){try{const r=localStorage.getItem('fence_state_cache');if(r)Object.assign(S,JSON.parse(r));}catch(e){}}
 
 // ── HOME SCREEN ──
