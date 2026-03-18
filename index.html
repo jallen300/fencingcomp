@@ -2104,40 +2104,56 @@ function buildDEBracketSvg(){
   const escS=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
   // Layout
-  const rowH=28;          // vertical space per fencer line
-  const matchGap=8;       // extra gap between the two lines of one match (already within rowH*2)
-  const betweenMatches=24;// vertical gap between separate matches in round 1
+  const rowH=28;
+  const betweenSlots=8;   // gap between top and bottom line of same match
+  const betweenMatches=28;// gap between separate matches
   const topMargin=36;
   const leftMargin=16;
-  const lineLen=180;      // length of each fencer's horizontal line
-  const colGap=200;       // horizontal distance between round columns
-  const finalStub=160;    // stub line after the final
+  const lineLen=180;
+  const colGap=200;
+  const finalStub=180;
 
-  // Compute Y for each line in round 0
-  // Each match: two lines at y and y+rowH, then betweenMatches gap
-  const r0Ys=[];
+  // Compute Y positions for every slot in every round
+  // slotYs[round][matchIdx] = [topY, botY]
+  // Round 0: computed from scratch
+  // Later rounds: vertically centred between the two parent matches
+  const slotYs=[];
+
+  // Round 0
+  const r0=[];
   let yc=topMargin;
   for(let m=0;m<firstMatchCount;m++){
     if(m>0)yc+=betweenMatches;
-    r0Ys.push([yc, yc+rowH]);
-    yc+=rowH*2+matchGap;
+    r0.push([yc, yc+rowH+betweenSlots]);
+    yc+=rowH*2+betweenSlots;
   }
+  slotYs.push(r0);
 
-  // Centre Y of each match per round (used for connector lines)
-  const centres=[];
-  centres.push(r0Ys.map(ys=>(ys[0]+ys[1])/2));
+  // Subsequent rounds: each match's top/bot are centred between two parent matches
   for(let r=1;r<nRounds;r++){
-    const prev=centres[r-1];
+    const prev=slotYs[r-1];
     const cur=[];
     for(let i=0;i<prev.length;i+=2){
-      const a=prev[i],b=prev[i+1]!=null?prev[i+1]:prev[i];
-      cur.push((a+b)/2);
+      const pA=prev[i],pB=prev[i+1]!=null?prev[i+1]:prev[i];
+      // Centre of parent match A = midpoint of its two lines
+      const cA=(pA[0]+pA[1])/2+rowH/2;
+      // Centre of parent match B
+      const cB=(pB[0]+pB[1])/2+rowH/2;
+      // Place top line of this match slightly above centre, bot below
+      const mid=(cA+cB)/2;
+      cur.push([mid-rowH/2-betweenSlots/2, mid+rowH/2+betweenSlots/2-rowH]);
     }
-    centres.push(cur);
+    slotYs.push(cur);
   }
 
-  const pageH=yc+30;
-  const pageW=leftMargin+lineLen+(nRounds-1)*colGap+finalStub+20;
+  // Centre Y of each match (midpoint between its two lines)
+  function matchCentreY(r,mi){
+    const[y1,y2]=slotYs[r][mi];
+    return(y1+y2)/2+rowH/2;
+  }
+
+  const pageH=yc+40;
+  const pageW=leftMargin+lineLen+(nRounds)*colGap+finalStub+20;
   const roundX=r=>leftMargin+r*colGap;
 
   let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${pageW}" height="${pageH}" viewBox="0 0 ${pageW} ${pageH}">`;
@@ -2145,92 +2161,99 @@ function buildDEBracketSvg(){
     .lb{font:bold 11px Arial,sans-serif;fill:#000;}
     .nm{font:11px Arial,sans-serif;fill:#000;}
     .sc{font:bold 11px Arial,sans-serif;fill:#000;}
-    .sd{font:10px Arial,sans-serif;fill:#555;}
+    .sd{font:10px Arial,sans-serif;fill:#777;}
     .ln{stroke:#000;stroke-width:1;fill:none;stroke-linecap:butt;shape-rendering:crispEdges;}
   </style>`;
 
   // Round labels
-  svg+=`<text class="lb" x="${leftMargin+lineLen/2}" y="16" text-anchor="middle">${escS(rounds[0].name)}</text>`;
-  for(let r=1;r<nRounds;r++){
+  for(let r=0;r<nRounds;r++){
     svg+=`<text class="lb" x="${roundX(r)+lineLen/2}" y="16" text-anchor="middle">${escS(rounds[r].name)}</text>`;
   }
 
-  // Helper: draw one fencer line (round 0)
-  function drawLine(x,y,seed,name,score,isBye){
-    // Horizontal line
+  // Text width approximation
+  function tw(str){return(str||'').length*6.5;}
+
+  // Draw one fencer's line with label above it
+  function drawFencerLine(x,y,seed,name,score,isBye){
     svg+=`<line class="ln" x1="${x}" y1="${y}" x2="${x+lineLen}" y2="${y}"/>`;
     if(isBye){
       svg+=`<text class="sd" x="${x+4}" y="${y-4}">BYE</text>`;
       return;
     }
-    // Seed in parens, then name, then score
     const seedStr=seed?`(${seed}) `:'';
     const nameStr=escS(name||'TBD');
-    const scoreStr=score!=null?` ${score}`:'';
     svg+=`<text class="nm" x="${x+4}" y="${y-4}">${seedStr}${nameStr}</text>`;
-    if(score!=null)svg+=`<text class="sc" x="${x+4+getTextWidth(seedStr+nameStr)}" y="${y-4}"> ${escS(String(score))}</text>`;
+    if(score!=null){
+      const scoreX=x+4+tw(seedStr+nameStr)+4;
+      svg+=`<text class="sc" x="${scoreX}" y="${y-4}">${escS(String(score))}</text>`;
+    }
   }
 
-  // Approximate text width for inline score positioning
-  function getTextWidth(str){return str.length*6.5;}
-
-  // Draw round 0
-  firstRound.matches.forEach((m,mi)=>{
-    const[y1,y2]=r0Ys[mi];
-    const x=roundX(0);
-    ['top','bot'].forEach((side,si)=>{
-      const y=si===0?y1:y2;
-      const fid=m[side].fid;
-      const f=fid?fById(fid):null;
-      const isBye=!fid&&m.bye;
-      drawLine(x,y,m[side].seed,f?f.name:'',m[side].score,isBye);
-    });
-  });
-
-  // Draw connectors and winner lines for rounds 1+
+  // For each round, draw both fencer lines of each match, plus connectors
   for(let r=0;r<nRounds;r++){
     const x=roundX(r);
-    const nextX=roundX(r+1);
     const isLast=r===nRounds-1;
 
     rounds[r].matches.forEach((m,mi)=>{
-      const midY=centres[r][mi];
+      const[y1,y2]=slotYs[r][mi];
 
       if(r===0){
-        // Vertical bar on right of round 0 lines connecting the two fencers
-        const[y1,y2]=r0Ys[mi];
-        svg+=`<line class="ln" x1="${x+lineLen}" y1="${y1}" x2="${x+lineLen}" y2="${y2}"/>`;
-        // Horizontal connector to next round's line position
-        svg+=`<line class="ln" x1="${x+lineLen}" y1="${midY}" x2="${isLast?x+lineLen+finalStub:nextX}" y2="${midY}"/>`;
+        // Round 0: draw from stored fencer data
+        ['top','bot'].forEach((side,si)=>{
+          const y=si===0?y1:y2;
+          const fid=m[side].fid;
+          const f=fid?fById(fid):null;
+          const isBye=!fid&&m.bye;
+          drawFencerLine(x,y,m[side].seed,f?f.name:'',m[side].score,isBye);
+        });
       }else{
-        // Winner advances — draw their line at the centre of their two parents
-        const prevCentres=centres[r-1];
-        const cA=prevCentres[mi*2];
-        const cB=prevCentres[mi*2+1]!=null?prevCentres[mi*2+1]:prevCentres[mi*2];
+        // Later rounds: top = winner of left parent[mi*2], bot = winner of left parent[mi*2+1]
+        // Draw both advancing fencers
+        ['top','bot'].forEach((side,si)=>{
+          const y=si===0?y1:y2;
+          // Get the winner from the corresponding previous-round match
+          const prevMi=mi*2+si;
+          const prevM=rounds[r-1].matches[prevMi];
+          if(!prevM){drawFencerLine(x,y,null,'',null,false);return;}
+          if(prevM.bye&&prevM.winner){
+            // Bye winner
+            const wfid=prevM.winner==='top'?prevM.top.fid:prevM.bot.fid;
+            const wf=wfid?fById(wfid):null;
+            const wseed=prevM.winner==='top'?prevM.top.seed:prevM.bot.seed;
+            drawFencerLine(x,y,wseed,wf?wf.name:'',null,false);
+          }else if(prevM.winner){
+            const wfid=prevM.winner==='top'?prevM.top.fid:prevM.bot.fid;
+            const wf=wfid?fById(wfid):null;
+            const wseed=prevM.winner==='top'?prevM.top.seed:prevM.bot.seed;
+            // Score shown is what this fencer scored in THIS round's match
+            const thisScore=m[side].score;
+            drawFencerLine(x,y,wseed,wf?wf.name:'',thisScore,false);
+          }else{
+            // Not yet determined
+            drawFencerLine(x,y,null,'',null,false);
+          }
+        });
+      }
 
-        // Vertical bar joining the two incoming connector lines
-        svg+=`<line class="ln" x1="${x}" y1="${cA}" x2="${x}" y2="${cB}"/>`;
+      // Vertical bar on right joining the two lines
+      const midY=matchCentreY(r,mi);
+      svg+=`<line class="ln" x1="${x+lineLen}" y1="${y1}" x2="${x+lineLen}" y2="${y2+rowH}"/>`;
 
-        // Winner's line
-        const winnerLineX=x;
-        svg+=`<line class="ln" x1="${winnerLineX}" y1="${midY}" x2="${winnerLineX+lineLen}" y2="${midY}"/>`;
+      // Horizontal line to next round (or final stub)
+      const nextX=isLast?x+lineLen+finalStub:roundX(r+1);
+      svg+=`<line class="ln" x1="${x+lineLen}" y1="${midY}" x2="${nextX}" y2="${midY}"/>`;
 
-        // Winner label
-        const fid=m.winner==='top'?m.top.fid:m.winner==='bot'?m.bot.fid:null;
-        const f=fid?fById(fid):null;
-        const seed=m.winner==='top'?m.top.seed:m.winner==='bot'?m.bot.seed:null;
-        const score=m.winner==='top'?m.top.score:m.winner==='bot'?m.bot.score:null;
-        if(fid){
-          const seedStr=seed?`(${seed}) `:'';
-          const nameStr=escS(f?f.name:'?');
-          svg+=`<text class="nm" x="${winnerLineX+4}" y="${midY-4}">${seedStr}${nameStr}</text>`;
-          if(score!=null)svg+=`<text class="sc" x="${winnerLineX+4+getTextWidth(seedStr+nameStr)}" y="${midY-4}"> ${escS(String(score))}</text>`;
-        }
-
-        // Horizontal connector to next round (or final stub)
-        svg+=`<line class="ln" x1="${x+lineLen}" y1="${midY}" x2="${isLast?x+lineLen+finalStub:nextX}" y2="${midY}"/>`;
-        if(isLast){
-          svg+=`<line class="ln" x1="${x+lineLen}" y1="${midY}" x2="${x+lineLen}" y2="${midY}"/>`;
+      // If last round, draw winner on the final stub line
+      if(isLast&&m.winner){
+        const wfid=m.winner==='top'?m.top.fid:m.bot.fid;
+        const wf=wfid?fById(wfid):null;
+        const wseed=m.winner==='top'?m.top.seed:m.bot.seed;
+        const wscore=m.winner==='top'?m.top.score:m.bot.score;
+        const seedStr=wseed?`(${wseed}) `:'';
+        const nameStr=escS(wf?wf.name:'?');
+        svg+=`<text class="nm" x="${x+lineLen+4}" y="${midY-4}">${seedStr}${nameStr}</text>`;
+        if(wscore!=null){
+          svg+=`<text class="sc" x="${x+lineLen+4+tw(seedStr+nameStr)+4}" y="${midY-4}">${escS(String(wscore))}</text>`;
         }
       }
     });
