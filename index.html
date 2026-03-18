@@ -37,6 +37,31 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 .sync-dot.ok{background:var(--green);}
 .sync-dot.err{background:var(--red);}
 .sync-dot.busy{background:var(--accent);animation:syncPulse .8s infinite;}
+/* PIN */
+.pin-display{background:var(--accent-dim);border:1.5px solid rgba(232,244,34,.4);border-radius:14px;padding:20px;text-align:center;margin-bottom:16px;}
+.pin-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--grey2);margin-bottom:8px;}
+.pin-value{font-family:var(--mono);font-size:48px;font-weight:500;letter-spacing:.15em;color:var(--accent);line-height:1;}
+.pin-hint{font-size:12px;color:var(--grey2);margin-top:8px;line-height:1.5;}
+.pin-input-row{display:flex;gap:10px;justify-content:center;margin:12px 0;}
+.pin-digit{width:56px;height:64px;background:var(--surface2);border:1.5px solid var(--line2);border-radius:12px;color:var(--white);font-family:var(--mono);font-size:28px;text-align:center;outline:none;transition:border-color .15s;}
+.pin-digit:focus{border-color:var(--accent);}
+/* spectator mode */
+.spectator-badge{position:fixed;top:8px;left:12px;font-family:var(--mono);font-size:10px;color:var(--grey2);z-index:998;background:var(--surface2);padding:3px 8px;border-radius:999px;border:1px solid var(--line2);}
+/* directory screen */
+.dir-hero{padding:32px 20px 20px;background:linear-gradient(160deg,rgba(232,244,34,.07) 0%,transparent 60%);border-bottom:1px solid var(--line);text-align:center;}
+.dir-hero .hi{font-size:44px;margin-bottom:10px;}
+.dir-hero h1{font-family:var(--display);font-size:24px;font-weight:800;letter-spacing:-.02em;}
+.dir-hero p{font-size:13px;color:var(--grey2);margin-top:5px;}
+.comp-dir-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s;}
+.comp-dir-item:last-child{border-bottom:none;}
+.comp-dir-item:active{background:var(--surface2);}
+.comp-dir-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.comp-dir-status.active{background:var(--green);}
+.comp-dir-status.complete{background:var(--grey2);}
+.comp-dir-status.reset{background:var(--red);}
+.comp-dir-name{font-size:15px;font-weight:600;}
+.comp-dir-meta{font-size:11px;color:var(--grey2);margin-top:2px;font-family:var(--mono);}
+.comp-dir-arrow{color:var(--grey);font-size:18px;}
 .page-header{padding:28px 20px 12px;border-bottom:1px solid var(--line);background:var(--bg);}
 .page-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.01em;}
 .page-sub{font-size:12px;color:var(--grey2);margin-top:3px;font-family:var(--mono);}
@@ -294,6 +319,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div style="height:16px;"></div>
     <button class="btn btn-accent" id="draw-btn" onclick="generateDraw()" disabled style="margin:0 20px;width:calc(100% - 40px);">Preview Draw</button>
     <div style="height:8px;"></div>
+    <div id="pin-reminder" style="display:none;align-items:center;justify-content:space-between;background:var(--accent-dim);border:1px solid rgba(232,244,34,.3);border-radius:12px;padding:12px 16px;margin:0 20px 0;">
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--grey2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Competition PIN</div>
+        <div id="pin-reminder-value" style="font-family:var(--mono);font-size:28px;color:var(--accent);letter-spacing:.15em;line-height:1;">----</div>
+      </div>
+      <div style="font-size:11px;color:var(--grey2);max-width:120px;text-align:right;line-height:1.4;">Share with scorers so they can record results</div>
+    </div>
     <div style="display:flex;gap:10px;margin:0 20px;">
       <button class="btn btn-ghost btn-sm" onclick="changeBackend()" style="flex:1;">⚙ Change URL</button>
       <button class="btn btn-danger btn-sm" id="reset-btn" onclick="confirmReset()" style="display:none;flex:1;">↺ Reset</button>
@@ -334,6 +366,30 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div id="results-content"></div>
 </div>
 
+<!-- SPECTATOR BADGE (shown in watch mode) -->
+<div id="spectator-badge" class="spectator-badge" style="display:none;">👁 Spectator view</div>
+
+<!-- DIRECTORY SCREEN (spectator entry point) -->
+<div id="screen-directory" class="screen">
+  <div class="dir-hero">
+    <div class="hi">🤺</div>
+    <h1>Competitions</h1>
+    <p id="dir-subtitle">Loading…</p>
+  </div>
+  <div id="dir-list" style="padding:12px 20px 0;">
+    <div style="text-align:center;padding:40px 0;color:var(--grey2);font-size:14px;">Loading competitions…</div>
+  </div>
+  <div style="height:20px;"></div>
+</div>
+
+<!-- SPECTATOR NAV (replaces bottom-nav in watch mode) -->
+<nav id="spectator-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:var(--surface);border-top:1px solid var(--line2);display:none;z-index:100;">
+  <button class="nav-btn" id="snav-back" onclick="spectatorBack()"><span class="ni">←</span>All</button>
+  <button class="nav-btn" id="snav-poules" onclick="spectatorShow('poules')"><span class="ni">🎯</span>Poules</button>
+  <button class="nav-btn" id="snav-de" onclick="spectatorShow('de')" disabled><span class="ni">🏆</span>DE</button>
+  <button class="nav-btn" id="snav-results" onclick="spectatorShow('results')"><span class="ni">📋</span>Results</button>
+</nav>
+
 <nav id="bottom-nav">
   <button class="nav-btn active" id="nav-setup" onclick="showScreen('setup')"><span class="ni">⚙️</span>Setup</button>
   <button class="nav-btn" id="nav-draw" onclick="showScreen('draw')" disabled><span class="ni">🔀</span>Draw</button>
@@ -372,6 +428,52 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
 </div>
 
+<!-- PIN ENTRY MODAL -->
+<div class="modal-overlay" id="pin-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="pin-modal-title">Enter Competition PIN</div>
+    <div class="modal-body">
+      <p style="color:var(--grey2);font-size:14px;line-height:1.6;margin-bottom:16px;" id="pin-modal-desc">
+        This competition is PIN-protected. Enter the 4-digit PIN to record results.
+      </p>
+      <div class="pin-input-row">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="pin-d1" oninput="pinDigitInput(this,1)">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="pin-d2" oninput="pinDigitInput(this,2)">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="pin-d3" oninput="pinDigitInput(this,3)">
+        <input class="pin-digit" type="number" min="0" max="9" maxlength="1" inputmode="numeric" id="pin-d4" oninput="pinDigitInput(this,4)">
+      </div>
+      <div id="pin-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:4px;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-accent" id="pin-submit-btn" onclick="submitPin()">Confirm PIN</button>
+      <button class="btn btn-ghost" onclick="pinReadOnly()">View only (no PIN)</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('pin-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN DISPLAY MODAL (shown to organiser after draw generated) -->
+<div class="modal-overlay" id="pin-reveal-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Your Competition PIN</div>
+    <div class="modal-body">
+      <div class="pin-display">
+        <div class="pin-label">Competition PIN</div>
+        <div class="pin-value" id="pin-reveal-value">----</div>
+        <div class="pin-hint">Share this PIN with everyone who will be recording results today. They'll need it to enter scores.</div>
+      </div>
+      <p style="color:var(--grey2);font-size:13px;line-height:1.6;">
+        The PIN is also shown at the top of the Setup screen whenever you need it. Anyone without the PIN can still view the competition but cannot edit results.
+      </p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-accent" onclick="closeModal('pin-reveal-modal');showScreen('draw');">View Draw →</button>
+    </div>
+  </div>
+</div>
+
 <!-- RESET MODAL -->
 <div class="modal-overlay" id="reset-modal">
   <div class="modal-sheet">
@@ -400,6 +502,12 @@ let S={
   compName:'',fencers:[],draft:null,pools:null,
   de:null,deComplete:false,screen:'setup',activePool:0,
 };
+let competitionId=localStorage.getItem('fence_comp_id')||null; // persistent per-device ID for this competition
+let competitionPin=localStorage.getItem('fence_comp_pin')||null; // PIN for this competition (organiser device only)
+let pinVerified=false; // true once scorer has verified PIN for current session
+let watchUrl=''; // set in spectator mode
+let spectatorMode=false;
+let spectatorCompId=null;
 
 // ── SYNC ──
 function setSyncStatus(status,label){
@@ -411,22 +519,31 @@ function setSyncStatus(status,label){
   lbl.textContent=label||'';
 }
 async function pushState(logMsg){
-  if(!backendUrl)return;
+  if(!backendUrl||spectatorMode)return;
   setSyncStatus('busy','Saving…');
   try{
-    const resp=await fetch(backendUrl,{method:'POST',body:JSON.stringify({action:'write',state:S,logMessage:logMsg||''})});
+    const body={action:'write',state:S,name:S.compName||'Competition',logMessage:logMsg||'',pin:competitionPin||undefined};
+    if(competitionId)body.id=competitionId;
+    const resp=await fetch(backendUrl,{method:'POST',body:JSON.stringify(body)});
     const json=await resp.json();
     if(!json.ok)throw new Error(json.error||'Write failed');
+    // Store the competition ID returned by the backend (important on first write)
+    if(json.id&&json.id!==competitionId){
+      competitionId=json.id;
+      localStorage.setItem('fence_comp_id',competitionId);
+    }
     lastStateHash=stateHash(S);
     setSyncStatus('ok','Saved');
     setTimeout(()=>setSyncStatus('ok',''),2000);
   }catch(e){setSyncStatus('err','Save failed');}
 }
 async function pollState(){
-  if(!backendUrl||isSyncing)return;
+  const url=spectatorMode?watchUrl:backendUrl;
+  if(!url||isSyncing)return;
   isSyncing=true;
   try{
-    const resp=await fetch(backendUrl+'?action=read&t='+Date.now());
+    const idParam=spectatorCompId?`&id=${encodeURIComponent(spectatorCompId)}`:(competitionId?`&id=${encodeURIComponent(competitionId)}`:'');
+    const resp=await fetch(`${url}?action=read${idParam}&t=${Date.now()}`);
     const json=await resp.json();
     if(!json.ok)throw new Error(json.error);
     const remote=json.state;
@@ -435,8 +552,10 @@ async function pollState(){
     if(rh!==lastStateHash){
       lastStateHash=rh;
       const openScreen=S.screen;
-      S=remote;S.screen=openScreen;
-      syncNavState();
+      S=remote;
+      if(!spectatorMode)S.screen=openScreen;
+      if(!spectatorMode)syncNavState();
+      else syncSpectatorNav();
       if(!document.getElementById('bout-modal').classList.contains('open'))rerenderCurrentScreen();
       setSyncStatus('ok','Updated');
       setTimeout(()=>setSyncStatus('ok',''),1500);
@@ -495,7 +614,7 @@ function changeBackend(){
 }
 
 // ── ROUTING ──
-const SCREENS=['connect','setup','draw','poules','de','results'];
+const SCREENS=['connect','setup','draw','poules','de','results','directory'];
 function showScreen(n){
   SCREENS.forEach(s=>{
     document.getElementById('screen-'+s).classList.toggle('active',s===n);
@@ -675,7 +794,15 @@ function generateDraw(){
   const sizes=getChosenLayout(sf.length);
   S.draft=clubSeparate(snakeAssign(sf,sizes),S.fencers);
   S.pools=null;S.de=null;S.deComplete=false;
-  save();enableNav('draw');showScreen('draw');
+  // Generate a new PIN if we don't already have one for this competition
+  if(!competitionPin){
+    competitionPin=String(Math.floor(1000+Math.random()*9000));
+    localStorage.setItem('fence_comp_pin',competitionPin);
+  }
+  save();enableNav('draw');
+  // Show PIN to organiser
+  document.getElementById('pin-reveal-value').textContent=competitionPin;
+  openModal('pin-reveal-modal');
 }
 
 // ── DRAW REVIEW ──
@@ -1082,31 +1209,114 @@ function renderDE(){
 }
 
 // ── RESULTS SCREEN ──
+// Builds progressive final placements from DE eliminations.
+// SF losers both get 3rd (two bronze medals — no 4th place).
+function getFinalPlacements(){
+  if(!S.de)return[];
+  const rounds=S.de.rounds;
+  const size=S.de.size;
+  const placements=[];
+  const finalRoundIdx=rounds.length-1;
+  const sfRoundIdx=rounds.length-2;
+
+  let nextPlace=size;
+
+  rounds.forEach((round,ri)=>{
+    const isFinal=ri===finalRoundIdx;
+    const isSF=ri===sfRoundIdx&&rounds.length>1;
+    const matchesInRound=round.matches.filter(m=>!m.bye).length;
+
+    const losersThisRound=[];
+    round.matches.forEach(m=>{
+      if(m.bye||!m.winner)return;
+      const loserId=m.winner==='top'?m.bot.fid:m.top.fid;
+      if(loserId)losersThisRound.push(loserId);
+    });
+
+    if(isFinal){
+      const fin=round.matches[0];
+      if(fin&&fin.winner){
+        const winnerId=fin.winner==='top'?fin.top.fid:fin.bot.fid;
+        const loserId=fin.winner==='top'?fin.bot.fid:fin.top.fid;
+        if(winnerId)placements.push({fid:winnerId,place:1,placeLabel:'1st'});
+        if(loserId)placements.push({fid:loserId,place:2,placeLabel:'2nd'});
+      }
+    } else if(isSF){
+      // Both SF losers share 3rd — two bronze medals, no 4th place
+      losersThisRound.forEach(fid=>{
+        placements.push({fid,place:3,placeLabel:'3rd'});
+      });
+      nextPlace-=matchesInRound;
+    } else {
+      const placesThisRound=losersThisRound.length;
+      if(placesThisRound>0){
+        const topPlace=nextPlace-placesThisRound+1;
+        const label=placesThisRound===1
+          ?`${topPlace}${ordinal(topPlace)}`
+          :`${topPlace}${ordinal(topPlace)}–${nextPlace}${ordinal(nextPlace)}`;
+        losersThisRound.forEach(fid=>{
+          placements.push({fid,place:topPlace,placeLabel:label});
+        });
+      }
+      nextPlace-=matchesInRound;
+    }
+  });
+
+  return placements.sort((a,b)=>a.place-b.place);
+}
+
+function ordinal(n){
+  if(n===1)return'st';if(n===2)return'nd';if(n===3)return'rd';return'th';
+}
+
+function placementColor(place){
+  if(place===1)return'var(--accent)';
+  if(place===2)return'#c0c0c0';
+  if(place===3)return'#cd7f32';
+  return'var(--white)';
+}
+
 function renderResults(){
   const el=document.getElementById('results-content');
-  const hasData=S.pools||S.de;
-  if(!hasData){
+  if(!S.pools&&!S.de){
     el.innerHTML=`<div class="empty-state"><div class="ei">📋</div><strong>No results yet</strong>Results will appear here as the competition progresses. This page updates automatically.</div>`;
     return;
   }
 
-  // Champion banner
-  let champHtml='';
-  if(S.deComplete&&S.de){
-    const fin=S.de.rounds[S.de.rounds.length-1].matches[0];
-    if(fin&&fin.winner){
-      const cid=fin.winner==='top'?fin.top.fid:fin.bot.fid;
-      const c=fById(cid);
-      champHtml=`<div class="champion-card"><div class="champ-icon">🥇</div><div class="champ-lbl">Champion</div><div class="champ-name">${esc(c.name)}</div>${c.club?`<div class="champ-club">${esc(c.club)}</div>`:''}</div>`;
-    }
+  // ── Final placements (built from DE eliminations) ──
+  const placements=getFinalPlacements();
+  let placementsHtml='';
+  if(placements.length>0){
+    // Group by place band for display
+    const rows=placements.map(p=>{
+      const f=fById(p.fid);
+      const medal=p.place===1?'🥇 ':p.place===2?'🥈 ':p.place===3?'🥉 ':'';
+      return`<div style="display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);">
+        <div style="font-family:var(--mono);font-size:16px;font-weight:500;min-width:44px;color:${placementColor(p.place)}">${medal}${p.placeLabel}</div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:600;color:${placementColor(p.place)}">${esc(f.name)}</div>
+          ${f.club?`<div style="font-size:11px;color:var(--grey2);margin-top:2px;">${esc(f.club)}</div>`:''}
+        </div>
+      </div>`;
+    });
+    // Remove border from last
+    const lastIdx=rows.length-1;
+    const fixedRows=rows.map((r,i)=>i===lastIdx?r.replace('border-bottom:1px solid var(--line)','border-bottom:none'):r);
+
+    placementsHtml=`
+      <div class="results-section"><span class="lbl">Final Standings</span></div>
+      <div class="results-pool-card">${fixedRows.join('')}</div>`;
   }
 
-  // Overall poule standings (if poules exist)
+  // ── Poule standings ──
   let poolsHtml='';
   if(S.pools){
+    const donePools=S.pools.filter(p=>p.bouts.every(b=>b.done)).length;
+    const totalPools=S.pools.length;
+
     // Overall combined standings
     const allStands=[];
-    S.pools.forEach((p,pi)=>{
+    S.pools.forEach(p=>{
       poolStandings(p).forEach((s,place)=>{
         const bo=p.fencers.length-1;
         allStands.push({...s,pool:p.name,vp:bo>0?s.v/bo:0,place});
@@ -1121,7 +1331,7 @@ function renderResults(){
 
     const overallRows=allStands.map((s,i)=>{
       const f=fById(s.id);
-      return`<tr class="${i===0?'place-1':''}">
+      return`<tr class="${i===0&&!S.de?'place-1':''}">
         <td><span class="place-circle">${i+1}</span></td>
         <td>
           <div style="font-weight:500;font-size:13px;">${esc(f.name)}</div>
@@ -1135,18 +1345,16 @@ function renderResults(){
       </tr>`;
     }).join('');
 
-    const donePools=S.pools.filter(p=>p.bouts.every(b=>b.done)).length;
-    const totalPools=S.pools.length;
-
     poolsHtml=`
-      <div class="results-section"><span class="lbl">Poule Standings <span style="color:var(--grey2);font-weight:400;">${donePools}/${totalPools} complete</span></span></div>
+      <div class="results-section" style="margin-top:${placements.length?'8':'0'}px;">
+        <span class="lbl">Poule Standings <span style="color:var(--grey2);font-weight:400;">${donePools}/${totalPools} complete</span></span>
+      </div>
       <div class="results-pool-card">
         <table class="standings-tbl">
           <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
           <tbody>${overallRows}</tbody>
         </table>
       </div>
-
       <div class="results-section" style="margin-top:8px;"><span class="lbl">By Poule</span></div>
       ${S.pools.map(p=>{
         const stands=poolStandings(p);
@@ -1175,34 +1383,9 @@ function renderResults(){
       }).join('')}`;
   }
 
-  // DE results
-  let deHtml='';
-  if(S.de){
-    const completed=[];
-    S.de.rounds.forEach(r=>r.matches.forEach(m=>{if(m.winner&&!m.bye)completed.push({r,m});}));
-    if(completed.length){
-      deHtml=`<div class="results-section" style="margin-top:8px;"><span class="lbl">Direct Elimination Results</span></div>
-        <div class="results-pool-card">
-          ${completed.map(({r,m})=>{
-            const wf=fById(m.winner==='top'?m.top.fid:m.bot.fid);
-            const lf=fById(m.winner==='top'?m.bot.fid:m.top.fid);
-            const ws=m.winner==='top'?m.top.score:m.bot.score;
-            const ls=m.winner==='top'?m.bot.score:m.top.score;
-            return`<div class="de-result-row">
-              <span class="de-result-round">${esc(r.name)}</span>
-              <div style="flex:1;">
-                <div class="de-result-winner">${esc(wf.name)} <span style="color:var(--green)">wins</span></div>
-                <div class="de-result-score">${ws!=null?`${ws}–${ls} def. `:''}${esc(lf.name)}</div>
-              </div>
-            </div>`;
-          }).join('')}
-        </div>`;
-    }
-  }
-
   el.innerHTML=`
     <div class="comp-bar"><span class="comp-bar-name">${esc(S.compName)}</span><span class="comp-bar-meta">Live Results</span></div>
-    ${champHtml}${poolsHtml}${deHtml}
+    ${placementsHtml}${poolsHtml}
     <div style="height:20px;"></div>`;
 }
 
@@ -1212,6 +1395,16 @@ function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 function confirmReset(){openModal('reset-modal');}
 async function doReset(){
+  // Tell backend to clear this competition's data
+  if(backendUrl&&competitionId){
+    try{await fetch(backendUrl,{method:'POST',body:JSON.stringify({action:'reset',id:competitionId,pin:competitionPin||''})});}catch(e){}
+  }
+  // Generate a new competition ID and PIN for the next competition
+  competitionId='comp_'+Math.random().toString(36).slice(2,9);
+  localStorage.setItem('fence_comp_id',competitionId);
+  competitionPin=null;
+  localStorage.removeItem('fence_comp_pin');
+  pinVerified=false;
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
   selectedLayout=null;
   ['draw','poules','de'].forEach(n=>{const b=document.getElementById('nav-'+n);if(b)b.disabled=true;});
@@ -1225,18 +1418,235 @@ document.getElementById('new-name').addEventListener('keydown',e=>{if(e.key==='E
 document.getElementById('new-seed').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('new-name').focus();});
 document.getElementById('comp-name').addEventListener('input',e=>{S.compName=e.target.value;});
 
+// ── PIN FUNCTIONS ──
+function pinDigitInput(el,pos){
+  // Clamp to single digit
+  let v=el.value.replace(/[^0-9]/g,'');
+  if(v.length>1)v=v.slice(-1);
+  el.value=v;
+  if(v&&pos<4){
+    const next=document.getElementById('pin-d'+( pos+1));
+    if(next)next.focus();
+  }
+}
+
+function getPinInput(){
+  return ['pin-d1','pin-d2','pin-d3','pin-d4'].map(id=>{
+    const el=document.getElementById(id);
+    return el?el.value.replace(/[^0-9]/g,''):'';
+  }).join('');
+}
+
+function clearPinInput(){
+  ['pin-d1','pin-d2','pin-d3','pin-d4'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  const errEl=document.getElementById('pin-error');
+  if(errEl){errEl.style.display='none';errEl.textContent='';}
+  const d1=document.getElementById('pin-d1');if(d1)d1.focus();
+}
+
+let _pinCallback=null; // resolve function waiting for PIN result
+
+async function submitPin(){
+  const pin=getPinInput();
+  if(pin.length<4){
+    const errEl=document.getElementById('pin-error');
+    if(errEl){errEl.textContent='Please enter all 4 digits.';errEl.style.display='block';}
+    return;
+  }
+  const btn=document.getElementById('pin-submit-btn');
+  if(btn){btn.disabled=true;btn.textContent='Checking…';}
+  try{
+    const resp=await fetch(backendUrl,{method:'POST',body:JSON.stringify({action:'verifyPin',id:spectatorCompId||competitionId,pin})});
+    const json=await resp.json();
+    if(json.valid){
+      competitionPin=pin;
+      localStorage.setItem('fence_comp_pin',pin);
+      pinVerified=true;
+      closeModal('pin-modal');
+      if(_pinCallback){_pinCallback(true);_pinCallback=null;}
+    }else{
+      const errEl=document.getElementById('pin-error');
+      if(errEl){errEl.textContent='Incorrect PIN. Try again or choose View only.';errEl.style.display='block';}
+      clearPinInput();
+      if(btn){btn.disabled=false;btn.textContent='Confirm PIN';}
+    }
+  }catch(e){
+    const errEl=document.getElementById('pin-error');
+    if(errEl){errEl.textContent='Could not verify PIN. Check your connection.';errEl.style.display='block';}
+    if(btn){btn.disabled=false;btn.textContent='Confirm PIN';}
+  }
+}
+
+function pinReadOnly(){
+  closeModal('pin-modal');
+  // Enter spectator mode for this competition without editing rights
+  pinVerified=false;
+  if(_pinCallback){_pinCallback(false);_pinCallback=null;}
+}
+
+// Returns a promise: true = PIN verified (write access), false = read only
+function promptForPin(){
+  return new Promise(resolve=>{
+    _pinCallback=resolve;
+    clearPinInput();
+    const errEl=document.getElementById('pin-error');
+    if(errEl)errEl.style.display='none';
+    const btn=document.getElementById('pin-submit-btn');
+    if(btn){btn.disabled=false;btn.textContent='Confirm PIN';}
+    openModal('pin-modal');
+  });
+}
+
+// ── SPECTATOR MODE ──
+function enterSpectatorMode(url){
+  spectatorMode=true;watchUrl=url;
+  document.getElementById('bottom-nav').style.display='none';
+  document.getElementById('spectator-nav').style.display='flex';
+  document.getElementById('spectator-badge').style.display='flex';
+  // Hide connect screen elements that don't apply
+  SCREENS.forEach(s=>{
+    document.getElementById('screen-'+s).classList.remove('active');
+  });
+  showDirectoryScreen(url);
+}
+
+async function showDirectoryScreen(url){
+  // Show directory screen
+  SCREENS.forEach(s=>document.getElementById('screen-'+s).classList.remove('active'));
+  document.getElementById('screen-directory').classList.add('active');
+  const subEl=document.getElementById('dir-subtitle');
+  const listEl=document.getElementById('dir-list');
+  subEl.textContent='Loading competitions…';
+  listEl.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--grey2);font-size:14px;">Loading…</div>';
+  try{
+    const resp=await fetch(`${url}?action=directory&t=${Date.now()}`);
+    const json=await resp.json();
+    if(!json.ok)throw new Error(json.error);
+    const comps=json.competitions||[];
+    subEl.textContent=comps.length?`${comps.length} competition${comps.length>1?'s':''}`:' ';
+    if(!comps.length){
+      listEl.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--grey2);font-size:14px;">No competitions recorded yet.</div>';
+      return;
+    }
+    listEl.innerHTML='<div class="card">'+comps.map(c=>{
+      const date=c.updated?new Date(c.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+      const statusDot=c.status==='complete'?'complete':c.status==='reset'?'reset':'active';
+      const statusLabel=c.status==='complete'?'Complete':c.status==='reset'?'Reset':'In progress';
+      return`<div class="comp-dir-item" onclick="spectatorOpenComp('${esc(c.id)}','${url}')">
+        <div class="comp-dir-status ${statusDot}"></div>
+        <div style="flex:1;min-width:0;">
+          <div class="comp-dir-name">${esc(c.name)}</div>
+          <div class="comp-dir-meta">${statusLabel}${date?' · '+date:''}</div>
+        </div>
+        <div class="comp-dir-arrow">›</div>
+      </div>`;
+    }).join('')+'</div>';
+  }catch(e){
+    subEl.textContent='Could not load';
+    listEl.innerHTML=`<div style="padding:20px;color:var(--red);font-size:13px;">Error loading competitions: ${esc(e.message)}</div>`;
+  }
+}
+
+async function spectatorOpenComp(id,url){
+  spectatorCompId=id;
+  setSyncStatus('busy','Loading…');
+  try{
+    const resp=await fetch(`${url}?action=read&id=${encodeURIComponent(id)}&t=${Date.now()}`);
+    const json=await resp.json();
+    if(!json.ok||!json.state)throw new Error('No data for this competition');
+    S=json.state;
+    lastStateHash=stateHash(S);
+    setSyncStatus('ok','');
+    syncSpectatorNav();
+    // Auto-navigate to the most relevant screen
+    const screen=S.deComplete?'results':S.de?'de':S.pools?'poules':'results';
+    spectatorShow(screen);
+    startPolling();
+  }catch(e){
+    setSyncStatus('err','Load failed');
+  }
+}
+
+function spectatorBack(){
+  spectatorCompId=null;if(pollTimer)clearInterval(pollTimer);
+  SCREENS.forEach(s=>document.getElementById('screen-'+s).classList.remove('active'));
+  document.getElementById('screen-directory').classList.add('active');
+  showDirectoryScreen(watchUrl);
+}
+
+function spectatorShow(screen){
+  SCREENS.forEach(s=>{
+    document.getElementById('screen-'+s).classList.remove('active');
+    const b=document.getElementById('snav-'+s);if(b)b.classList.remove('active');
+  });
+  document.getElementById('screen-'+screen).classList.add('active');
+  const b=document.getElementById('snav-'+screen);if(b)b.classList.add('active');
+  S.screen=screen;
+  if(screen==='poules')renderPoules();
+  if(screen==='de')renderDE();
+  if(screen==='results')renderResults();
+}
+
+function syncSpectatorNav(){
+  const deBtn=document.getElementById('snav-de');
+  if(deBtn)deBtn.disabled=!S.de;
+}
+
 // ── INIT ──
 window.addEventListener('load',async()=>{
+  // Check for ?watch= parameter — spectator mode
+  const params=new URLSearchParams(window.location.search);
+  const watchParam=params.get('watch');
+  if(watchParam){
+    enterSpectatorMode(watchParam);
+    return;
+  }
+
+  // Normal manager mode
   loadFromCache();
   enableNav('results');
+  // Ensure we have a competition ID
+  if(!competitionId){
+    competitionId='comp_'+Math.random().toString(36).slice(2,9);
+    localStorage.setItem('fence_comp_id',competitionId);
+  }
   if(backendUrl){
     document.getElementById('backend-url-input').value=backendUrl;
     setSyncStatus('busy','Connecting…');
     try{
-      const resp=await fetch(backendUrl+'?action=read&t='+Date.now());
+      const idParam=competitionId?`&id=${encodeURIComponent(competitionId)}`:'';
+      const resp=await fetch(`${backendUrl}?action=read${idParam}&t=${Date.now()}`);
       const json=await resp.json();
-      if(json.ok&&json.state){Object.assign(S,json.state);lastStateHash=stateHash(S);}
-      syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
+      if(json.ok&&json.state){
+        const remote=json.state;
+        // If this is a different competition than we last managed, check PIN
+        const remoteId=json.id||competitionId;
+        if(remote&&remote.draft&&remoteId!==competitionId&&!competitionPin){
+          // There's an active competition on the backend that isn't ours — ask for PIN
+          const oldCompId=competitionId;
+          competitionId=remoteId;
+          localStorage.setItem('fence_comp_id',remoteId);
+          Object.assign(S,remote);lastStateHash=stateHash(S);
+          syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
+          // Prompt for PIN asynchronously
+          const granted=await promptForPin();
+          if(!granted){
+            // Read-only: downgrade to spectator mode for this comp
+            spectatorMode=true;spectatorCompId=remoteId;
+            document.getElementById('bottom-nav').style.display='none';
+            document.getElementById('spectator-nav').style.display='flex';
+            document.getElementById('spectator-badge').style.display='flex';
+            spectatorShow('results');
+          }
+        }else{
+          Object.assign(S,remote);lastStateHash=stateHash(S);
+          syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
+        }
+      }else{
+        syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
+      }
     }catch(e){
       setSyncStatus('err','Offline — using cached data');
       syncNavState();showScreen(S.screen||'setup');startPolling();
