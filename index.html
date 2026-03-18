@@ -1158,7 +1158,10 @@ function poolStandings(pool){
     if(b.s1>b.s2)st[b.f1].v++;else if(b.s2>b.s1)st[b.f2].v++;
   });
   const bo=pool.fencers.length-1;
-  return pool.fencers.map(id=>({id,...st[id],ind:st[id].ts-st[id].tr,bo,vp:bo>0?st[id].v/bo:0}))
+  // bf = bouts actually fenced by each fencer (for live V% calculation)
+  const bf={};pool.fencers.forEach(id=>{bf[id]=0;});
+  pool.bouts.filter(b=>b.done).forEach(b=>{bf[b.f1]++;bf[b.f2]++;});
+  return pool.fencers.map(id=>({id,...st[id],ind:st[id].ts-st[id].tr,bo,bf:bf[id],vp:bf[id]>0?st[id].v/bf[id]:0}))
     .sort((a,b)=>{
       const vpa=a.bo>0?a.v/a.bo:0,vpb=b.bo>0?b.v/b.bo:0;
       if(vpb!==vpa)return vpb-vpa;
@@ -1369,7 +1372,7 @@ function overallStandings(){
   S.pools.forEach((p,pi)=>{
     poolStandings(p).forEach((s,place)=>{
       const bo=p.fencers.length-1;
-      all.push({...s,poule:pi,place,vp:bo>0?s.v/bo:0});
+      all.push({...s,poule:pi,place}); // vp already on s from poolStandings
     });
   });
   all.sort((a,b)=>{
@@ -1628,7 +1631,7 @@ function renderResults(){
     S.pools.forEach(p=>{
       poolStandings(p).forEach((s,place)=>{
         const bo=p.fencers.length-1;
-        allStands.push({...s,pool:p.name,vp:bo>0?s.v/bo:0,place});
+        allStands.push({...s,pool:p.name,place}); // vp already on s from poolStandings
       });
     });
     allStands.sort((a,b)=>{
