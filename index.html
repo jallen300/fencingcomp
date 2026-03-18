@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Fencing — Competition Manager</title>
@@ -37,13 +37,27 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 .sync-dot.ok{background:var(--green);}
 .sync-dot.err{background:var(--red);}
 .sync-dot.busy{background:var(--accent);animation:syncPulse .8s infinite;}
+/* home screen */
+.home-comp-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.home-comp-hd{padding:14px 16px 10px;}
+.home-comp-name{font-family:var(--display);font-size:17px;font-weight:700;margin-bottom:3px;}
+.home-comp-meta{font-size:11px;color:var(--grey2);font-family:var(--mono);}
+.home-comp-actions{display:flex;gap:0;border-top:1px solid var(--line);}
+.home-comp-btn{flex:1;background:none;border:none;color:var(--white);font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:14px 8px;cursor:pointer;transition:background .12s;}
+.home-comp-btn:active{background:var(--surface2);}
+.home-comp-btn+.home-comp-btn{border-left:1px solid var(--line);}
+.home-comp-btn.score{color:var(--accent);}
+.home-comp-btn.watch{color:var(--grey2);}
+.home-comp-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle;}
+.home-comp-status-dot.active{background:var(--green);}
+.home-comp-status-dot.complete{background:var(--grey2);}
 /* PIN */
 .pin-display{background:var(--accent-dim);border:1.5px solid rgba(232,244,34,.4);border-radius:14px;padding:20px;text-align:center;margin-bottom:16px;}
 .pin-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--grey2);margin-bottom:8px;}
 .pin-value{font-family:var(--mono);font-size:48px;font-weight:500;letter-spacing:.15em;color:var(--accent);line-height:1;}
 .pin-hint{font-size:12px;color:var(--grey2);margin-top:8px;line-height:1.5;}
 .pin-input-row{display:flex;gap:10px;justify-content:center;margin:12px 0;}
-.pin-digit{width:56px;height:64px;background:var(--surface2);border:1.5px solid var(--line2);border-radius:12px;color:var(--white);font-family:var(--mono);font-size:28px;text-align:center;outline:none;transition:border-color .15s;}
+.pin-digit{width:56px;height:64px;background:var(--surface2);border:1.5px solid var(--line2);border-radius:12px;color:var(--white);font-family:var(--mono);font-size:28px;text-align:center;outline:none;transition:border-color .15s;-webkit-text-size-adjust:100%;}
 .pin-digit:focus{border-color:var(--accent);}
 /* spectator mode */
 .spectator-badge{position:fixed;top:8px;left:12px;font-family:var(--mono);font-size:10px;color:var(--grey2);z-index:998;background:var(--surface2);padding:3px 8px;border-radius:999px;border:1px solid var(--line2);}
@@ -124,7 +138,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .fencer-del:active{color:var(--red);}
 .add-row{display:grid;grid-template-columns:58px 1fr;border-top:1px solid var(--line);}
 .seed-cell{border-right:1px solid var(--line);}
-.seed-cell input{border-radius:0;border:none;background:var(--surface2);text-align:center;font-family:var(--mono);padding:13px 6px;}
+.seed-cell input{border-radius:0;border:none;background:var(--surface2);text-align:center;font-family:var(--mono);padding:13px 6px;font-size:16px;}
 .name-cell{display:flex;}
 .name-cell input{border-radius:0;border:none;background:transparent;flex:1;font-size:15px;padding:13px;}
 .name-cell input:focus{border-color:transparent;}
@@ -147,11 +161,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .draw-club{font-size:11px;color:var(--grey2);margin-top:1px;}
 .clash-tag{margin-left:6px;font-size:10px;color:var(--orange);}
 .draw-move-wrap{padding:6px 10px;}
-.draw-move-sel{background:var(--surface3);color:var(--white);border:1px solid var(--line2);border-radius:8px;padding:6px 28px 6px 10px;font-size:12px;font-family:var(--body);appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%239999aa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;min-width:88px;}
+.draw-move-sel{background:var(--surface3);color:var(--white);border:1px solid var(--line2);border-radius:8px;padding:6px 28px 6px 10px;font-size:16px;font-family:var(--body);appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%239999aa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;min-width:88px;}
 /* poules */
 .pool-tab-bar{display:flex;gap:6px;padding:12px 20px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;border-bottom:1px solid var(--line);}
 .pool-tab-bar::-webkit-scrollbar{display:none;}
-.pool-tab{flex-shrink:0;padding:7px 14px;border-radius:999px;border:1px solid var(--line2);background:none;color:var(--grey2);font-size:12px;font-family:var(--mono);cursor:pointer;transition:all .15s;}
+.pool-tab{flex-shrink:0;padding:7px 14px;border-radius:999px;border:1px solid var(--line2);background:none;color:var(--grey2);font-size:14px;font-family:var(--mono);cursor:pointer;transition:all .15s;}
 .pool-tab.active{background:var(--accent-dim);border-color:rgba(232,244,34,.4);color:var(--accent);}
 .pool-tab.done{border-color:rgba(68,204,136,.4);color:var(--green);}
 .pool-tab.done.active{background:var(--green-dim);}
@@ -187,7 +201,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .vs-label{font-family:var(--mono);font-size:11px;color:var(--grey);text-transform:uppercase;}
 /* direct score input row */
 .direct-score-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:0 8px 8px;}
-.direct-score-row input{background:var(--surface2);border:1px solid var(--line2);border-radius:10px;color:var(--white);font-family:var(--mono);font-size:28px;padding:10px 8px;text-align:center;width:100%;outline:none;}
+.direct-score-row input{background:var(--surface2);border:1px solid var(--line2);border-radius:10px;color:var(--white);font-family:var(--mono);font-size:28px;padding:10px 8px;text-align:center;width:100%;outline:none;-webkit-text-size-adjust:100%;}
 .direct-score-row input:focus{border-color:var(--accent);}
 .direct-score-divider{font-family:var(--mono);font-size:18px;color:var(--grey2);text-align:center;}
 /* DE */
@@ -250,30 +264,41 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <div id="sync-bar"></div>
 <div class="sync-status"><div class="sync-dot" id="sync-dot"></div><span id="sync-label"></span></div>
 
-<!-- CONNECTION SETUP -->
+<!-- HOME SCREEN -->
 <div id="screen-connect" class="screen active">
-  <div class="setup-hero">
-    <div class="hi">🔗</div>
-    <h1>Connect to Backend</h1>
-    <p>Enter your Apps Script Web App URL to begin</p>
+  <div class="setup-hero" style="padding-bottom:16px;">
+    <div class="hi">🤺</div>
+    <h1>Fencing Competitions</h1>
+    <p id="home-subtitle">Loading…</p>
   </div>
-  <div class="connect-card">
-    <div class="section">
-      <div class="info-box">
-        <strong>First time?</strong> You need to deploy the Apps Script backend first.
-        <ol>
-          <li>Open the <strong>FencingCompetition_AppsScript.js</strong> file</li>
-          <li>Follow the setup instructions at the top of that file</li>
-          <li>Paste the Web App URL below</li>
-        </ol>
-        <br><strong>Already set up?</strong> Just paste your existing Web App URL.
+
+  <!-- New competition button -->
+  <div style="padding:16px 20px 0;">
+    <button class="btn btn-accent" onclick="startNewCompetition()">+ New Competition</button>
+  </div>
+
+  <!-- Competition list -->
+  <div id="home-comp-list" style="padding:12px 20px 0;">
+    <div style="text-align:center;padding:32px 0;color:var(--grey2);font-size:14px;">Loading competitions…</div>
+  </div>
+
+  <!-- Advanced / change URL -->
+  <div style="padding:8px 20px 24px;text-align:center;">
+    <button onclick="showAdvancedUrl()" style="background:none;border:none;color:var(--grey2);font-size:12px;font-family:var(--mono);cursor:pointer;padding:8px;">⚙ Advanced: change backend URL</button>
+  </div>
+
+  <!-- Advanced URL panel (hidden by default) -->
+  <div id="advanced-url-panel" style="display:none;padding:0 20px 24px;">
+    <div class="card">
+      <div class="section">
+        <span class="lbl">Apps Script Web App URL</span>
+        <input type="text" id="backend-url-input" class="url-input" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" autocorrect="off" spellcheck="false" style="font-size:14px;">
+        <div style="margin-top:12px;display:flex;gap:10px;">
+          <button class="btn btn-accent btn-sm" style="flex:1;" onclick="applyCustomUrl()">Use this URL</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="resetToDefaultUrl()">Reset to default</button>
+        </div>
+        <div id="connect-error" style="display:none;margin-top:12px;padding:12px;background:var(--red-dim);border:1px solid rgba(255,68,68,.3);border-radius:10px;font-size:13px;color:var(--red);line-height:1.5;"></div>
       </div>
-      <span class="lbl">Apps Script Web App URL</span>
-      <input type="text" id="backend-url-input" class="url-input" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" autocorrect="off" spellcheck="false">
-      <div style="margin-top:14px;">
-        <button class="btn btn-accent" onclick="connectBackend()">Connect</button>
-      </div>
-      <div id="connect-error" style="display:none;margin-top:12px;padding:12px;background:var(--red-dim);border:1px solid rgba(255,68,68,.3);border-radius:10px;font-size:13px;color:var(--red);line-height:1.5;"></div>
     </div>
   </div>
 </div>
@@ -384,13 +409,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <!-- SPECTATOR NAV (replaces bottom-nav in watch mode) -->
 <nav id="spectator-nav" style="display:none;position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:var(--surface);border-top:1px solid var(--line2);display:none;z-index:100;">
-  <button class="nav-btn" id="snav-back" onclick="spectatorBack()"><span class="ni">←</span>All</button>
+  <button class="nav-btn" id="snav-back" onclick="goHome()"><span class="ni">🏠</span>Home</button>
   <button class="nav-btn" id="snav-poules" onclick="spectatorShow('poules')"><span class="ni">🎯</span>Poules</button>
   <button class="nav-btn" id="snav-de" onclick="spectatorShow('de')" disabled><span class="ni">🏆</span>DE</button>
   <button class="nav-btn" id="snav-results" onclick="spectatorShow('results')"><span class="ni">📋</span>Results</button>
 </nav>
 
 <nav id="bottom-nav">
+  <button class="nav-btn" id="nav-home" onclick="goHome()"><span class="ni">🏠</span>Home</button>
   <button class="nav-btn active" id="nav-setup" onclick="showScreen('setup')"><span class="ni">⚙️</span>Setup</button>
   <button class="nav-btn" id="nav-draw" onclick="showScreen('draw')" disabled><span class="ni">🔀</span>Draw</button>
   <button class="nav-btn" id="nav-poules" onclick="showScreen('poules')" disabled><span class="ni">🎯</span>Poules</button>
@@ -489,9 +515,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <script>
 'use strict';
+const DEFAULT_BACKEND_URL='https://script.google.com/macros/s/AKfycbw53Agv21AQGF6JdsS8J_c2QLvIXsv2BH3f2zVmECGxeTy9juyA0jdLe_CH9fljbgRQ/exec';
 const URL_KEY='fence_backend_url';
 const POLL_INTERVAL=3000;
-let backendUrl=localStorage.getItem(URL_KEY)||'';
+let backendUrl=localStorage.getItem(URL_KEY)||DEFAULT_BACKEND_URL;
 let pollTimer=null;
 let lastStateHash='';
 let isSyncing=false;
@@ -503,7 +530,8 @@ let S={
   de:null,deComplete:false,screen:'setup',activePool:0,
 };
 let competitionId=localStorage.getItem('fence_comp_id')||null; // persistent per-device ID for this competition
-let competitionPin=localStorage.getItem('fence_comp_pin')||null; // PIN for this competition (organiser device only)
+let competitionPin=localStorage.getItem('fence_comp_pin')||null; // PIN for this competition
+let isOrganiser=localStorage.getItem('fence_is_organiser')==='1'; // true only on the device that generated the draw
 let pinVerified=false; // true once scorer has verified PIN for current session
 let watchUrl=''; // set in spectator mode
 let spectatorMode=false;
@@ -574,43 +602,146 @@ async function save(logMsg){
 }
 function loadFromCache(){try{const r=localStorage.getItem('fence_state_cache');if(r)Object.assign(S,JSON.parse(r));}catch(e){}}
 
-// ── CONNECTION ──
-async function connectBackend(){
-  const input=document.getElementById('backend-url-input');
-  const url=input.value.trim();
-  const errEl=document.getElementById('connect-error');
-  errEl.style.display='none';
-  if(!url||!url.startsWith('https://script.google.com')){
-    errEl.textContent='That doesn\'t look like a valid Apps Script URL. It should start with https://script.google.com/macros/s/';
-    errEl.style.display='block';return;
-  }
-  const btn=document.querySelector('#screen-connect .btn-accent');
-  btn.disabled=true;btn.textContent='Connecting…';
-  setSyncStatus('busy','Connecting…');
+// ── HOME SCREEN ──
+async function loadHomeScreen(){
+  const subEl=document.getElementById('home-subtitle');
+  const listEl=document.getElementById('home-comp-list');
+  subEl.textContent='Loading…';
+  setSyncStatus('busy','Loading…');
   try{
-    const resp=await fetch(url,{method:'POST',body:JSON.stringify({action:'ping'})});
+    const resp=await fetch(backendUrl+'?action=directory&t='+Date.now());
     const json=await resp.json();
-    if(!json.ok)throw new Error(json.error||'Backend returned error');
-    backendUrl=url;localStorage.setItem(URL_KEY,url);
-    setSyncStatus('ok','Connected');
-    const sr=await fetch(url+'?action=read&t='+Date.now());
-    const sj=await sr.json();
-    if(sj.ok&&sj.state){Object.assign(S,sj.state);lastStateHash=stateHash(S);}
-    syncNavState();showScreen(S.screen||'setup');startPolling();
+    if(!json.ok)throw new Error(json.error);
+    setSyncStatus('ok','');
+    const comps=(json.competitions||[]).filter(co=>co.status!=='reset');
+    subEl.textContent=comps.length?`${comps.length} competition${comps.length>1?'s':''}`:' ';
+    if(!comps.length){
+      listEl.innerHTML='<div style="text-align:center;padding:24px 0;color:var(--grey2);font-size:14px;">No competitions yet.<br>Tap <strong style="color:var(--white)">+ New Competition</strong> to create one.</div>';
+      return;
+    }
+    listEl.innerHTML=comps.map(comp=>{
+      const date=comp.updated?new Date(comp.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+      const isActive=comp.status==='active';
+      return`<div class="home-comp-card">
+        <div class="home-comp-hd">
+          <div class="home-comp-name">${esc(comp.name)}</div>
+          <div class="home-comp-meta">
+            <span class="home-comp-status-dot ${isActive?'active':'complete'}"></span>
+            ${isActive?'In progress':'Complete'}${date?' · '+date:''}
+          </div>
+        </div>
+        <div class="home-comp-actions">
+          ${isActive?`<button class="home-comp-btn score" onclick="homeScore('${comp.id}')">🎯 Score</button>`:''}
+          <button class="home-comp-btn watch" onclick="homeWatch('${comp.id}')">👁 Watch</button>
+        </div>
+      </div>`;
+    }).join('');
   }catch(e){
-    setSyncStatus('err','Failed');
-    errEl.textContent='Could not connect: '+e.message+'. Make sure you\'ve deployed the script as a Web App with access set to "Anyone".';
-    errEl.style.display='block';btn.disabled=false;btn.textContent='Connect';
+    setSyncStatus('err','');
+    subEl.textContent='Could not load';
+    listEl.innerHTML=`<div style="padding:16px;color:var(--red);font-size:13px;">Could not reach backend: ${esc(e.message)}</div>`;
   }
 }
+
+function startNewCompetition(){
+  competitionId='comp_'+Math.random().toString(36).slice(2,9);
+  localStorage.setItem('fence_comp_id',competitionId);
+  competitionPin=null;
+  localStorage.removeItem('fence_comp_pin');
+  localStorage.setItem('fence_is_organiser','1');
+  isOrganiser=true;
+  S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
+  selectedLayout=null;
+  document.getElementById('bottom-nav').style.display='flex';
+  ['draw','poules','de'].forEach(n=>{const b=document.getElementById('nav-'+n);if(b)b.disabled=true;});
+  syncNavState();
+  showScreen('setup');
+  startPolling();
+}
+
+async function homeScore(id){
+  spectatorMode=false;spectatorCompId=null;isOrganiser=false;
+  localStorage.removeItem('fence_is_organiser');
+  setSyncStatus('busy','Loading…');
+  try{
+    const resp=await fetch(backendUrl+'?action=read&id='+encodeURIComponent(id)+'&t='+Date.now());
+    const json=await resp.json();
+    if(!json.ok||!json.state)throw new Error('Could not load competition');
+    competitionId=id;
+    localStorage.setItem('fence_comp_id',id);
+    Object.assign(S,json.state);
+    lastStateHash=stateHash(S);
+    setSyncStatus('ok','');
+    syncNavState();
+    document.getElementById('bottom-nav').style.display='flex';
+    const granted=await promptForPin();
+    if(granted){
+      pinVerified=true;
+      const screen=S.pools?'poules':S.draft?'draw':'setup';
+      showScreen(screen);
+      startPolling();
+    }else{
+      homeWatch(id);
+    }
+  }catch(e){
+    setSyncStatus('err','');
+    alert('Could not load competition: '+e.message);
+  }
+}
+
+function homeWatch(id){
+  spectatorMode=true;spectatorCompId=id;watchUrl=backendUrl;
+  document.getElementById('bottom-nav').style.display='none';
+  document.getElementById('spectator-nav').style.display='flex';
+  document.getElementById('spectator-badge').style.display='flex';
+  spectatorOpenComp(id,backendUrl);
+}
+
+function showAdvancedUrl(){
+  const panel=document.getElementById('advanced-url-panel');
+  const input=document.getElementById('backend-url-input');
+  if(panel)panel.style.display=panel.style.display==='none'?'block':'none';
+  if(input)input.value=backendUrl;
+}
+
+function applyCustomUrl(){
+  const input=document.getElementById('backend-url-input');
+  const errEl=document.getElementById('connect-error');
+  const url=(input?input.value:'').trim();
+  if(!url||!url.startsWith('https://script.google.com')){
+    if(errEl){errEl.textContent='Must start with https://script.google.com/macros/s/';errEl.style.display='block';}
+    return;
+  }
+  backendUrl=url;localStorage.setItem(URL_KEY,url);
+  if(errEl)errEl.style.display='none';
+  const panel=document.getElementById('advanced-url-panel');
+  if(panel)panel.style.display='none';
+  loadHomeScreen();
+}
+
+function resetToDefaultUrl(){
+  backendUrl=DEFAULT_BACKEND_URL;
+  localStorage.removeItem(URL_KEY);
+  const input=document.getElementById('backend-url-input');
+  if(input)input.value=DEFAULT_BACKEND_URL;
+  const panel=document.getElementById('advanced-url-panel');
+  if(panel)panel.style.display='none';
+  loadHomeScreen();
+}
+
 function changeBackend(){
   if(pollTimer)clearInterval(pollTimer);
-  document.getElementById('backend-url-input').value=backendUrl||'';
+  spectatorMode=false;
+  document.getElementById('bottom-nav').style.display='flex';
+  document.getElementById('spectator-nav').style.display='none';
+  document.getElementById('spectator-badge').style.display='none';
   SCREENS.forEach(s=>{
-    document.getElementById('screen-'+s).classList.toggle('active',s==='connect');
+    document.getElementById('screen-'+s).classList.remove('active');
     const b=document.getElementById('nav-'+s);if(b)b.classList.remove('active');
   });
   document.getElementById('screen-connect').classList.add('active');
+  const hb=document.getElementById('nav-home');if(hb)hb.classList.add('active');
+  loadHomeScreen();
 }
 
 // ── ROUTING ──
@@ -635,6 +766,18 @@ function rerenderCurrentScreen(){
   if(n==='results')renderResults();
 }
 function syncNavState(){
+  // Setup tab: only visible to the organiser device
+  const setupBtn=document.getElementById('nav-setup');
+  if(setupBtn){
+    if(isOrganiser||!S.draft){
+      setupBtn.style.display='';
+    }else{
+      // Scorer or spectator — hide setup tab
+      setupBtn.style.display='none';
+      // Redirect away from setup if currently on it
+      if(S.screen==='setup')S.screen='poules';
+    }
+  }
   if(S.draft||S.pools)enableNav('draw');
   if(S.pools)enableNav('poules');
   if(S.de)enableNav('de');
@@ -711,7 +854,21 @@ function addFencer(){
   save();renderSetup();
 }
 function removeFencer(id){S.fencers=S.fencers.filter(f=>f.id!==id);save();renderSetup();}
-function sortedFencers(){return[...S.fencers].sort((a,b)=>{const as=a.seed??9999,bs=b.seed??9999;return as!==bs?as-bs:a.name.localeCompare(b.name);});}
+function sortedFencers(){
+  return[...S.fencers].sort((a,b)=>{
+    const as=a.seed??9999,bs=b.seed??9999;
+    if(as!==bs)return as-bs;
+    // Both unseeded: sort alphabetically for display only
+    if(as===9999&&bs===9999)return a.name.localeCompare(b.name);
+    return 0;
+  });
+}
+// For draw generation: unseeded fencers are shuffled randomly
+function fencersForDraw(){
+  const seeded=S.fencers.filter(f=>f.seed!=null).sort((a,b)=>a.seed-b.seed);
+  const unseeded=S.fencers.filter(f=>f.seed==null).sort(()=>Math.random()-.5);
+  return[...seeded,...unseeded];
+}
 
 function openEditFencer(id){
   editingFencerId=id;
@@ -790,7 +947,7 @@ function clubSeparate(draft,fencers){
 }
 function generateDraw(){
   S.compName=document.getElementById('comp-name').value.trim()||'Club Competition';
-  const sf=sortedFencers();
+  const sf=fencersForDraw();
   const sizes=getChosenLayout(sf.length);
   S.draft=clubSeparate(snakeAssign(sf,sizes),S.fencers);
   S.pools=null;S.de=null;S.deComplete=false;
@@ -799,6 +956,8 @@ function generateDraw(){
     competitionPin=String(Math.floor(1000+Math.random()*9000));
     localStorage.setItem('fence_comp_pin',competitionPin);
   }
+  // Mark this device as the organiser
+  localStorage.setItem('fence_is_organiser','1');
   save();enableNav('draw');
   // Show PIN to organiser
   document.getElementById('pin-reveal-value').textContent=competitionPin;
@@ -835,7 +994,7 @@ function renderDraw(){
   else clashWarn.style.display='none';
 }
 function reshuffleDraw(){
-  const sf=sortedFencers(),sizes=getChosenLayout(sf.length);
+  const sf=fencersForDraw(),sizes=getChosenLayout(sf.length);
   S.draft=clubSeparate(snakeAssign(sf,sizes),S.fencers);save();renderDraw();
 }
 
@@ -897,11 +1056,12 @@ function renderPoules(){
   }).join('');
   const stands=poolStandings(pool);
   const standHtml=`<table class="standings-tbl">
-    <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
+    <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">V%</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
     <tbody>${stands.map((s,i)=>`<tr class="${i===0?'place-1':''}">
       <td><span class="place-circle">${i+1}</span></td>
       <td><div style="font-weight:500;font-size:13px;">${esc(fById(s.id).name)}</div>${fById(s.id).club?`<div style="font-size:11px;color:var(--grey2)">${esc(fById(s.id).club)}</div>`:''}</td>
       <td class="num" style="font-family:var(--mono)">${s.v}</td>
+      <td class="num" style="font-family:var(--mono);color:var(--grey2)">${s.bo>0?Math.round(s.vp*100)+'%':'—'}</td>
       <td class="num" style="font-family:var(--mono)">${s.ts}</td>
       <td class="num" style="font-family:var(--mono)">${s.tr}</td>
       <td class="num" style="font-family:var(--mono);color:${s.ind>0?'var(--green)':s.ind<0?'var(--red)':'var(--grey2)'}">${s.ind>0?'+':''}${s.ind}</td>
@@ -969,9 +1129,9 @@ function renderBoutModal(f1,f2,mx,done){
       <div class="direct-score-divider">–</div>
       <input type="number" id="direct-s2" min="0" max="${mx}" value="${s2}" inputmode="numeric" onchange="directScore(2,${mx})" oninput="directScore(2,${mx})">
     </div></div>
-    ${s1===s2&&s1>0?'<div style="text-align:center;font-size:12px;color:var(--grey2);padding-top:8px;">Tied — confirm to record as draw</div>':''}`;
+    <div id="bout-draw-error" style="display:${s1===s2&&(s1>0||done)?'block':'none'};text-align:center;font-size:13px;color:var(--red);padding:6px 0 2px;font-weight:500;">One fencer must win — scores can't be equal</div>`;
   document.getElementById('bout-modal-actions').innerHTML=`
-    <button class="btn btn-accent" onclick="confirmBout()">Confirm Result</button>
+    <button class="btn btn-accent" onclick="confirmBout()" ${s1===s2?'disabled':''}>Confirm Result</button>
     ${done?`<button class="btn btn-ghost btn-sm" onclick="clearBout()">Clear Result</button>`:''}
     <button class="btn btn-ghost btn-sm" onclick="closeModal('bout-modal')">Cancel</button>`;
 }
@@ -1009,6 +1169,12 @@ function adj(side,delta,mx){
 
 function confirmBout(){
   const{type,pi,bi,ri,mi}=AB;
+  if(TS.s1===TS.s2){
+    // No draws allowed — show error in modal
+    const errDiv=document.getElementById('bout-draw-error');
+    if(errDiv){errDiv.style.display='block';}
+    return;
+  }
   if(type==='poule'){
     const b=S.pools[pi].bouts[bi];b.s1=TS.s1;b.s2=TS.s2;b.done=true;
   }else{
@@ -1339,6 +1505,7 @@ function renderResults(){
           <div style="font-size:10px;color:var(--grey2);font-family:var(--mono);margin-top:1px;">${esc(s.pool)}</div>
         </td>
         <td class="num" style="font-family:var(--mono)">${s.v}</td>
+        <td class="num" style="font-family:var(--mono);color:var(--grey2)">${s.bo>0?Math.round(s.vp*100)+'%':'—'}</td>
         <td class="num" style="font-family:var(--mono)">${s.ts}</td>
         <td class="num" style="font-family:var(--mono)">${s.tr}</td>
         <td class="num" style="font-family:var(--mono);color:${s.ind>0?'var(--green)':s.ind<0?'var(--red)':'var(--grey2)'}">${s.ind>0?'+':''}${s.ind}</td>
@@ -1351,7 +1518,7 @@ function renderResults(){
       </div>
       <div class="results-pool-card">
         <table class="standings-tbl">
-          <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
+          <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">V%</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
           <tbody>${overallRows}</tbody>
         </table>
       </div>
@@ -1365,6 +1532,7 @@ function renderResults(){
             <td><span class="place-circle">${i+1}</span></td>
             <td><div style="font-weight:500;font-size:13px;">${esc(f.name)}</div>${f.club?`<div style="font-size:11px;color:var(--grey2)">${esc(f.club)}</div>`:''}</td>
             <td class="num" style="font-family:var(--mono)">${s.v}</td>
+            <td class="num" style="font-family:var(--mono);color:var(--grey2)">${s.bo>0?Math.round(s.vp*100)+'%':'—'}</td>
             <td class="num" style="font-family:var(--mono)">${s.ts}</td>
             <td class="num" style="font-family:var(--mono)">${s.tr}</td>
             <td class="num" style="font-family:var(--mono);color:${s.ind>0?'var(--green)':s.ind<0?'var(--red)':'var(--grey2)'}">${s.ind>0?'+':''}${s.ind}</td>
@@ -1376,7 +1544,7 @@ function renderResults(){
             <span class="results-pool-meta">${done}/${p.bouts.length} bouts</span>
           </div>
           <table class="standings-tbl">
-            <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
+            <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">V%</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
         </div>`;
@@ -1404,6 +1572,8 @@ async function doReset(){
   localStorage.setItem('fence_comp_id',competitionId);
   competitionPin=null;
   localStorage.removeItem('fence_comp_pin');
+  localStorage.removeItem('fence_is_organiser');
+  isOrganiser=false;
   pinVerified=false;
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
   selectedLayout=null;
@@ -1497,6 +1667,21 @@ function promptForPin(){
     if(btn){btn.disabled=false;btn.textContent='Confirm PIN';}
     openModal('pin-modal');
   });
+}
+
+function goHome(){
+  if(pollTimer)clearInterval(pollTimer);
+  spectatorMode=false;
+  document.getElementById('bottom-nav').style.display='flex';
+  document.getElementById('spectator-nav').style.display='none';
+  document.getElementById('spectator-badge').style.display='none';
+  SCREENS.forEach(s=>{
+    document.getElementById('screen-'+s).classList.remove('active');
+    const b=document.getElementById('nav-'+s);if(b)b.classList.remove('active');
+  });
+  document.getElementById('screen-connect').classList.add('active');
+  const hb=document.getElementById('nav-home');if(hb)hb.classList.add('active');
+  loadHomeScreen();
 }
 
 // ── SPECTATOR MODE ──
@@ -1612,46 +1797,9 @@ window.addEventListener('load',async()=>{
     competitionId='comp_'+Math.random().toString(36).slice(2,9);
     localStorage.setItem('fence_comp_id',competitionId);
   }
-  if(backendUrl){
-    document.getElementById('backend-url-input').value=backendUrl;
-    setSyncStatus('busy','Connecting…');
-    try{
-      const idParam=competitionId?`&id=${encodeURIComponent(competitionId)}`:'';
-      const resp=await fetch(`${backendUrl}?action=read${idParam}&t=${Date.now()}`);
-      const json=await resp.json();
-      if(json.ok&&json.state){
-        const remote=json.state;
-        // If this is a different competition than we last managed, check PIN
-        const remoteId=json.id||competitionId;
-        if(remote&&remote.draft&&remoteId!==competitionId&&!competitionPin){
-          // There's an active competition on the backend that isn't ours — ask for PIN
-          const oldCompId=competitionId;
-          competitionId=remoteId;
-          localStorage.setItem('fence_comp_id',remoteId);
-          Object.assign(S,remote);lastStateHash=stateHash(S);
-          syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
-          // Prompt for PIN asynchronously
-          const granted=await promptForPin();
-          if(!granted){
-            // Read-only: downgrade to spectator mode for this comp
-            spectatorMode=true;spectatorCompId=remoteId;
-            document.getElementById('bottom-nav').style.display='none';
-            document.getElementById('spectator-nav').style.display='flex';
-            document.getElementById('spectator-badge').style.display='flex';
-            spectatorShow('results');
-          }
-        }else{
-          Object.assign(S,remote);lastStateHash=stateHash(S);
-          syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
-        }
-      }else{
-        syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
-      }
-    }catch(e){
-      setSyncStatus('err','Offline — using cached data');
-      syncNavState();showScreen(S.screen||'setup');startPolling();
-    }
-  }else{showScreen('connect');}
+  // Always start on the home screen — it loads the competition directory
+  showScreen('connect');
+  loadHomeScreen();
 });
 </script>
 </body>
