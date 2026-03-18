@@ -38,61 +38,18 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 .sync-dot.err{background:var(--red);}
 .sync-dot.busy{background:var(--accent);animation:syncPulse .8s infinite;}
 /* home screen */
-.home-comp-card{
-  background:var(--navy-mid);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:8px;overflow:hidden;margin-bottom:10px;
-}
-.home-comp-hd{padding:12px 16px 10px;}
-.home-comp-name{
-  font-family:var(--barlow-cond);
-  font-size:18px;font-weight:700;
-  letter-spacing:.03em;
-  margin-bottom:3px;
-}
-.home-comp-meta{font-size:11px;color:#8899aa;font-family:var(--barlow);}
-.home-comp-actions{
-  display:flex;gap:10px;
-  padding:10px 14px 12px;
-  border-top:1px solid rgba(255,255,255,0.06);
-}
-.home-comp-btn{
-  padding:9px 20px;border-radius:6px;
-  border:none;cursor:pointer;
-  font-family:var(--barlow-cond);font-size:13px;font-weight:700;
-  letter-spacing:.08em;text-transform:uppercase;
-  transition:all .12s;
-}
-.home-comp-btn:active{transform:scale(.97);}
-.home-comp-btn.score{background:var(--red-brand);color:#fff;}
-.home-comp-btn.score:active{background:var(--red-brand-dark);}
-.home-comp-btn.watch{background:rgba(255,255,255,0.08);color:#c5d0db;border:1px solid rgba(255,255,255,0.14);}
-.home-comp-btn.watch:active{background:rgba(255,255,255,0.14);}
-.home-comp-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle;}
-.home-comp-status-dot.active{background:var(--green);}
-.home-comp-status-dot.complete{background:#8899aa;}
-.home-advanced-link{
-  text-align:center;padding:12px 20px 24px;
-}
-.home-advanced-link button{
-  background:none;border:none;
-  color:#8899aa;font-size:11px;
-  font-family:var(--barlow);
-  cursor:pointer;padding:8px;
-  letter-spacing:.03em;
-}
-.home-url-panel{padding:0 20px 20px;}
-.home-url-panel .card{background:var(--navy-mid);border-color:rgba(255,255,255,0.1);}
+
 .home-comp-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px;}
-.home-comp-hd{padding:14px 16px 10px;}
+.home-comp-hd{padding:14px 14px 8px;}
 .home-comp-name{font-family:var(--display);font-size:17px;font-weight:700;margin-bottom:3px;}
 .home-comp-meta{font-size:11px;color:var(--grey2);font-family:var(--mono);}
-.home-comp-actions{display:flex;gap:0;border-top:1px solid var(--line);}
-.home-comp-btn{flex:1;background:none;border:none;color:var(--white);font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:14px 8px;cursor:pointer;transition:background .12s;}
-.home-comp-btn:active{background:var(--surface2);}
-.home-comp-btn+.home-comp-btn{border-left:1px solid var(--line);}
-.home-comp-btn.score{color:var(--accent);}
-.home-comp-btn.watch{color:var(--grey2);}
+.home-comp-actions{display:flex;gap:8px;padding:0 14px 14px;}
+.home-comp-btn{flex:1;padding:10px 8px;border-radius:10px;border:none;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .12s;}
+.home-comp-btn:active{transform:scale(.97);}
+.home-comp-btn.score{background:var(--accent);color:#0d0d0f;}
+.home-comp-btn.score:active{background:#cdd91e;}
+.home-comp-btn.watch{background:var(--surface3);color:var(--grey2);border:1px solid var(--line2);}
+.home-comp-btn.watch:active{background:var(--surface2);}
 .home-comp-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle;}
 .home-comp-status-dot.active{background:var(--green);}
 .home-comp-status-dot.complete{background:var(--grey2);}
@@ -694,8 +651,8 @@ async function loadHomeScreen(){
           </div>
         </div>
         <div class="home-comp-actions">
-          ${isActive?`<button class="home-comp-btn score" onclick="homeScore('${comp.id}')">🎯 Score</button>`:''}
-          <button class="home-comp-btn watch" onclick="homeWatch('${comp.id}')">👁 Watch</button>
+          ${isActive?`<button class="home-comp-btn score" onclick="homeScore('${comp.id}')">Score</button>`:''}
+          <button class="home-comp-btn watch" onclick="homeWatch('${comp.id}')">Watch</button>
         </div>
       </div>`;
     }).join('');
