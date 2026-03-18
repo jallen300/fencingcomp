@@ -1532,15 +1532,21 @@ function renderDE(){
 }
 
 // ── RESULTS SCREEN ──
-// Builds progressive final placements from DE eliminations.
-// SF losers both get 3rd (two bronze medals — no 4th place).
+// Builds final placements from DE eliminations.
+// Within each round, losers are ranked individually by their overall poule seeding
+// (higher poule rank = better final place within the band).
+// SF losers both get 3rd — two bronze medals, no 4th place.
 function getFinalPlacements(){
-  if(!S.de)return[];
+  if(!S.de||!S.pools)return[];
   const rounds=S.de.rounds;
   const size=S.de.size;
   const placements=[];
   const finalRoundIdx=rounds.length-1;
   const sfRoundIdx=rounds.length-2;
+
+  // Poule rank lookup: fid -> rank index (0=best)
+  const pouleRanked=overallStandings().map(s=>s.id);
+  const pouleRank=new Map(pouleRanked.map((id,i)=>[id,i]));
 
   let nextPlace=size;
 
@@ -1555,6 +1561,9 @@ function getFinalPlacements(){
       const loserId=m.winner==='top'?m.bot.fid:m.top.fid;
       if(loserId)losersThisRound.push(loserId);
     });
+
+    // Sort by poule rank so best poule performer gets best place in band
+    losersThisRound.sort((a,b)=>(pouleRank.get(a)??999)-(pouleRank.get(b)??999));
 
     if(isFinal){
       const fin=round.matches[0];
@@ -1571,16 +1580,12 @@ function getFinalPlacements(){
       });
       nextPlace-=matchesInRound;
     } else {
-      const placesThisRound=losersThisRound.length;
-      if(placesThisRound>0){
-        const topPlace=nextPlace-placesThisRound+1;
-        const label=placesThisRound===1
-          ?`${topPlace}${ordinal(topPlace)}`
-          :`${topPlace}${ordinal(topPlace)}–${nextPlace}${ordinal(nextPlace)}`;
-        losersThisRound.forEach(fid=>{
-          placements.push({fid,place:topPlace,placeLabel:label});
-        });
-      }
+      // Individual places within the band, ordered by poule rank
+      const bandStart=nextPlace-losersThisRound.length+1;
+      losersThisRound.forEach((fid,i)=>{
+        const place=bandStart+i;
+        placements.push({fid,place,placeLabel:`${place}${ordinal(place)}`});
+      });
       nextPlace-=matchesInRound;
     }
   });
