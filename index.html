@@ -365,6 +365,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     </div>
     <div style="display:flex;gap:10px;margin:0 20px;">
       <button class="btn btn-ghost btn-sm" onclick="changeBackend()" style="flex:1;">⚙ Change URL</button>
+      <button class="btn btn-ghost btn-sm" id="show-pins-btn" onclick="showPinsModal()" style="display:none;flex:1;color:var(--accent);">🔑 Show PINs</button>
       <button class="btn btn-danger btn-sm" id="reset-btn" onclick="confirmReset()" style="display:none;flex:1;">↺ Reset</button>
     </div>
     <div style="height:20px;"></div>
@@ -964,6 +965,8 @@ function renderSetup(){
   drawBtn.disabled=S.fencers.length<4||!layouts.length;
   drawBtn.textContent=S.pools?'Re-generate Draw':'Preview Draw';
   resetBtn.style.display=(S.pools||S.fencers.length)?'block':'none';
+  const showPinsBtn=document.getElementById('show-pins-btn');
+  if(showPinsBtn)showPinsBtn.style.display=isOrganiser()&&competitionPin?'block':'none';
   if(S.compName)document.getElementById('comp-name').value=S.compName;
   // PIN reminder — only show to organiser once draw is generated
   const pinReminderEl=document.getElementById('pin-reminder');
@@ -1831,6 +1834,34 @@ function goHome(){
   document.getElementById('screen-connect').classList.add('active');
   const hb=document.getElementById('nav-home');if(hb)hb.classList.add('active');
   loadHomeScreen();
+}
+
+// ── SHOW PINS (safe — never touches competition data) ──
+async function showPinsModal(){
+  // Generate organiser PIN if missing (e.g. competition created before v5p13)
+  if(!organiserPin){
+    let op=String(Math.floor(1000+Math.random()*9000));
+    while(op===competitionPin)op=String(Math.floor(1000+Math.random()*9000));
+    organiserPin=op;
+    localStorage.setItem('fence_organiser_pin',organiserPin);
+    // Write to backend so it's stored against this competition
+    if(backendUrl&&competitionId){
+      try{
+        await fetch(backendUrl,{method:'POST',body:JSON.stringify({
+          action:'write',state:S,name:S.compName||'Competition',
+          pin:competitionPin||undefined,organiserPin:organiserPin
+        })});
+      }catch(e){}
+    }
+  }
+  const srv=document.getElementById('pin-reveal-value');
+  const orv=document.getElementById('pin-reveal-org-value');
+  if(srv)srv.textContent=competitionPin||'----';
+  if(orv)orv.textContent=organiserPin||'----';
+  // Change the modal button text since we're not going to draw
+  const modalBtn=document.querySelector('#pin-reveal-modal .btn-accent');
+  if(modalBtn){modalBtn.textContent='Close';modalBtn.onclick=()=>closeModal('pin-reveal-modal');}
+  openModal('pin-reveal-modal');
 }
 
 // ── RECLAIM ORGANISER ACCESS ──
