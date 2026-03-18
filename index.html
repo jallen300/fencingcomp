@@ -553,7 +553,11 @@ let S={
 };
 let competitionId=localStorage.getItem('fence_comp_id')||null; // persistent per-device ID for this competition
 let competitionPin=localStorage.getItem('fence_comp_pin')||null; // PIN for this competition
-let isOrganiser=localStorage.getItem('fence_is_organiser')==='1'; // true only on the device that generated the draw
+// isOrganiser is a function — checks if this device created the current competition
+function isOrganiser(){
+  if(!competitionId)return false;
+  return localStorage.getItem('fence_organiser_'+competitionId)==='1';
+}
 let pinVerified=false; // true once scorer has verified PIN for current session
 let watchUrl=''; // set in spectator mode
 let spectatorMode=false;
@@ -670,8 +674,7 @@ function startNewCompetition(){
   localStorage.setItem('fence_comp_id',competitionId);
   competitionPin=null;
   localStorage.removeItem('fence_comp_pin');
-  localStorage.setItem('fence_is_organiser','1');
-  isOrganiser=true;
+  localStorage.setItem('fence_organiser_'+competitionId,'1');
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
   selectedLayout=null;
   document.getElementById('bottom-nav').style.display='flex';
@@ -682,8 +685,7 @@ function startNewCompetition(){
 }
 
 async function homeScore(id){
-  spectatorMode=false;spectatorCompId=null;isOrganiser=false;
-  localStorage.removeItem('fence_is_organiser');
+  spectatorMode=false;spectatorCompId=null;
   setSyncStatus('busy','Loading…');
   try{
     const resp=await fetch(backendUrl+'?action=read&id='+encodeURIComponent(id)+'&t='+Date.now());
@@ -791,7 +793,7 @@ function syncNavState(){
   // Setup tab: only visible to the organiser device
   const setupBtn=document.getElementById('nav-setup');
   if(setupBtn){
-    if(isOrganiser||!S.draft){
+    if(isOrganiser()||!S.draft){
       setupBtn.style.display='';
     }else{
       // Scorer or spectator — hide setup tab
@@ -978,8 +980,8 @@ function generateDraw(){
     competitionPin=String(Math.floor(1000+Math.random()*9000));
     localStorage.setItem('fence_comp_pin',competitionPin);
   }
-  // Mark this device as the organiser
-  localStorage.setItem('fence_is_organiser','1');
+  // Mark this device as organiser for this competition
+  localStorage.setItem('fence_organiser_'+competitionId,'1');
   save();enableNav('draw');
   // Show PIN to organiser
   document.getElementById('pin-reveal-value').textContent=competitionPin;
@@ -1001,7 +1003,7 @@ function renderDraw(){
   if(!S.draft)return;
   // Show organiser-only actions only to the organiser
   const orgActions=document.getElementById('draw-organiser-actions');
-  if(orgActions)orgActions.style.display=isOrganiser?'block':'none';
+  if(orgActions)orgActions.style.display=isOrganiser()?'block':'none';
   const container=document.getElementById('draw-container');
   const clashWarn=document.getElementById('clash-warn');
   const clashes=clashesIn(S.draft),clashIds=new Set(clashes.flatMap(c=>[c.a,c.b]));
@@ -1627,12 +1629,12 @@ async function doReset(){
     try{await fetch(backendUrl,{method:'POST',body:JSON.stringify({action:'reset',id:competitionId,pin:competitionPin||''})});}catch(e){}
   }
   // Generate a new competition ID and PIN for the next competition
+  const oldCompId=competitionId;
   competitionId='comp_'+Math.random().toString(36).slice(2,9);
   localStorage.setItem('fence_comp_id',competitionId);
   competitionPin=null;
   localStorage.removeItem('fence_comp_pin');
-  localStorage.removeItem('fence_is_organiser');
-  isOrganiser=false;
+  if(oldCompId)localStorage.removeItem('fence_organiser_'+oldCompId);
   pinVerified=false;
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
   selectedLayout=null;
