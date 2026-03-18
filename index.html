@@ -37,6 +37,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 .sync-dot.ok{background:var(--green);}
 .sync-dot.err{background:var(--red);}
 .sync-dot.busy{background:var(--accent);animation:syncPulse .8s infinite;}
+/* print button */
+.print-link{display:block;text-align:right;padding:6px 20px 0;font-size:11px;font-family:var(--mono);color:var(--grey2);cursor:pointer;background:none;border:none;text-decoration:none;letter-spacing:.03em;}
+.print-link:active{color:var(--white);}
 /* home screen */
 
 .home-comp-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px;}
@@ -396,16 +399,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <!-- POULES -->
 <div id="screen-poules" class="screen">
+  <button class="print-link" onclick="printPouleSheets()">🖨 Print poule sheets</button>
   <div id="poules-content"></div>
 </div>
 
 <!-- DE -->
 <div id="screen-de" class="screen">
+  <button class="print-link" onclick="printDEBracket()">🖨 Print DE bracket</button>
   <div id="de-content"></div>
 </div>
 
 <!-- RESULTS -->
 <div id="screen-results" class="screen">
+  <button class="print-link" onclick="printResults()">🖨 Print results</button>
   <div id="results-content"></div>
 </div>
 
@@ -1967,6 +1973,202 @@ async function submitReclaimPin(){
     if(errEl){errEl.textContent='Connection error. Try again.';errEl.style.display='block';}
   }
 }
+
+
+// ── PRINT FUNCTIONS ──────────────────────────────────────────────────────────
+
+function printBase(title, bodyHtml){
+  const html=`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Arial',sans-serif;font-size:11pt;color:#000;background:#fff;padding:16px;}
+  h1{font-size:16pt;font-weight:bold;margin-bottom:4px;}
+  h2{font-size:13pt;font-weight:bold;margin-bottom:8px;margin-top:16px;}
+  h3{font-size:11pt;font-weight:bold;margin-bottom:6px;margin-top:12px;}
+  .comp-title{font-size:18pt;font-weight:bold;margin-bottom:2px;}
+  .subtitle{font-size:10pt;color:#555;margin-bottom:16px;}
+  table{border-collapse:collapse;width:100%;}
+  th,td{border:1px solid #999;padding:4px 6px;text-align:center;vertical-align:middle;}
+  th{background:#e8e8e8;font-weight:bold;}
+  td.name{text-align:left;font-weight:bold;min-width:100px;}
+  td.score-box{min-width:28px;width:28px;}
+  td.score-box.self{background:#000;}
+  td.num{min-width:36px;}
+  td.rank{font-weight:bold;width:28px;}
+  .poule-wrap{margin-bottom:24px;break-inside:avoid;}
+  .de-round{display:flex;flex-direction:column;justify-content:space-around;}
+  .bracket{display:flex;gap:0;align-items:stretch;}
+  .bracket-col{display:flex;flex-direction:column;min-width:140px;}
+  .bracket-col-title{font-size:8pt;font-weight:bold;text-align:center;padding:2px 0 6px;color:#555;text-transform:uppercase;letter-spacing:.05em;}
+  .match{border:1px solid #999;margin:4px 6px;page-break-inside:avoid;}
+  .match-slot{display:flex;align-items:center;padding:3px 6px;min-height:22px;font-size:9pt;}
+  .match-slot+.match-slot{border-top:1px solid #ccc;}
+  .match-slot .seed{color:#888;font-size:8pt;min-width:18px;}
+  .match-slot .name{flex:1;}
+  .match-slot .score{min-width:22px;text-align:right;font-weight:bold;}
+  .match-slot.winner{background:#f0f8e8;}
+  .match-slot.bye{color:#aaa;}
+  .final-table td.gold{background:#fff9e0;}
+  .final-table td.silver{background:#f5f5f5;}
+  .final-table td.bronze{background:#fdf0e0;}
+  .place{font-weight:bold;text-align:center;}
+  @media print{
+    body{padding:8px;}
+    .no-print{display:none;}
+    .poule-wrap{break-inside:avoid;}
+  }
+  .print-btn{margin-bottom:16px;padding:6px 16px;background:#333;color:#fff;border:none;border-radius:4px;font-size:10pt;cursor:pointer;}
+</style>
+</head>
+<body>
+<button class="print-btn no-print" onclick="window.print()">🖨 Print</button>
+${bodyHtml}
+</body>
+</html>`;
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+function printPouleSheets(){
+  if(!S.pools){alert('No poules yet.');return;}
+  let body=`<div class="comp-title">${esc(S.compName)}</div>
+<div class="subtitle">Poule Sheets</div>`;
+
+  S.pools.forEach((pool,pi)=>{
+    const n=pool.fencers.length;
+    const fencers=pool.fencers.map(id=>fById(id));
+    // Build result lookup
+    const scores={};
+    pool.bouts.filter(b=>b.done).forEach(b=>{
+      scores[b.f1+'_'+b.f2]={s1:b.s1,s2:b.s2};
+    });
+    function getScore(rowId,colId){
+      if(rowId===colId)return null; // diagonal
+      const k1=rowId+'_'+colId,k2=colId+'_'+rowId;
+      if(scores[k1])return scores[k1].s1;
+      if(scores[k2])return scores[k2].s2;
+      return '';
+    }
+    // Column headers
+    let thead='<tr><th class="rank">#</th><th class="name" style="text-align:left">Name</th>';
+    fencers.forEach((_,ci)=>{thead+=`<th class="score-box">${ci+1}</th>`;});
+    thead+='<th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th><th class="num">Rank</th></tr>';
+
+    // Standings for filled results
+    const stands=poolStandings(pool);
+    const rankMap=new Map(stands.map((s,i)=>[s.id,i+1]));
+
+    let rows='';
+    fencers.forEach((f,ri)=>{
+      const s=stands.find(x=>x.id===f.id)||{v:0,ts:0,tr:0,ind:0};
+      const hasBouts=pool.bouts.some(b=>b.done&&(b.f1===f.id||b.f2===f.id));
+      rows+=`<tr>
+        <td class="rank">${ri+1}</td>
+        <td class="name">${esc(f.name)}${f.club?`<br><span style="font-size:8pt;font-weight:normal;color:#555">${esc(f.club)}</span>`:''}</td>`;
+      fencers.forEach((_,ci)=>{
+        if(ri===ci){rows+='<td class="score-box self"></td>';}
+        else{
+          const sc=getScore(f.id,fencers[ci].id);
+          rows+=`<td class="score-box">${sc!==''?sc:''}</td>`;
+        }
+      });
+      rows+=`<td class="num">${hasBouts?s.v:''}</td>
+        <td class="num">${hasBouts?s.ts:''}</td>
+        <td class="num">${hasBouts?s.tr:''}</td>
+        <td class="num">${hasBouts?s.ind:''}</td>
+        <td class="num">${hasBouts?rankMap.get(f.id)||'':''}</td>
+      </tr>`;
+    });
+
+    body+=`<div class="poule-wrap">
+      <h2>${esc(pool.name)} &nbsp;<span style="font-size:9pt;font-weight:normal;color:#555">${n} fencers</span></h2>
+      <table><thead>${thead}</thead><tbody>${rows}</tbody></table>
+    </div>`;
+  });
+
+  printBase(`${S.compName} — Poule Sheets`, body);
+}
+
+function printDEBracket(){
+  if(!S.de){alert('No DE bracket yet.');return;}
+  const rounds=S.de.rounds;
+
+  const cols=rounds.map((round,ri)=>{
+    const gap=Math.pow(2,ri);
+    const matches=round.matches.map(m=>{
+      function slot(side){
+        const fid=m[side].fid;
+        const f=fid?fById(fid):null;
+        const score=m[side].score;
+        const isW=m.winner===side;
+        const isBye=!fid&&m.bye;
+        if(isBye)return`<div class="match-slot bye"><span class="seed"></span><span class="name">BYE</span><span class="score"></span></div>`;
+        if(!fid)return`<div class="match-slot"><span class="seed"></span><span class="name">TBD</span><span class="score"></span></div>`;
+        return`<div class="match-slot${isW?' winner':''}"><span class="seed">${m[side].seed||''}</span><span class="name">${esc(f?f.name:'?')}</span><span class="score">${score!=null?score:''}</span></div>`;
+      }
+      return`<div class="match" style="margin-top:${gap*4}px;margin-bottom:${gap*4}px;">${slot('top')}${slot('bot')}</div>`;
+    }).join('');
+    return`<div class="bracket-col"><div class="bracket-col-title">${esc(round.name)}</div>${matches}</div>`;
+  }).join('');
+
+  const body=`<div class="comp-title">${esc(S.compName)}</div>
+<div class="subtitle">Direct Elimination Bracket</div>
+<div class="bracket" style="overflow-x:auto;">${cols}</div>`;
+
+  printBase(`${S.compName} — DE Bracket`, body);
+}
+
+function printResults(){
+  if(!S.pools){alert('No results yet.');return;}
+  let body=`<div class="comp-title">${esc(S.compName)}</div>
+<div class="subtitle">Results</div>`;
+
+  // Final standings if DE complete
+  const placements=getFinalPlacements();
+  if(placements.length){
+    body+=`<h2>Final Standings</h2><table class="final-table">
+      <thead><tr><th>Place</th><th style="text-align:left">Name</th><th style="text-align:left">Club</th></tr></thead><tbody>`;
+    placements.forEach(p=>{
+      const f=fById(p.fid);
+      const cls=p.place===1?'gold':p.place===2?'silver':p.place===3?'bronze':'';
+      body+=`<tr class="${cls}"><td class="place">${p.placeLabel}</td><td style="text-align:left">${esc(f.name)}</td><td style="text-align:left">${esc(f.club||'')}</td></tr>`;
+    });
+    body+=`</tbody></table>`;
+  }
+
+  // Poule results
+  body+=`<h2>Poule Results</h2>`;
+  S.pools.forEach(pool=>{
+    const stands=poolStandings(pool);
+    body+=`<h3>${esc(pool.name)}</h3>
+    <table>
+      <thead><tr><th>Rank</th><th style="text-align:left">Name</th><th style="text-align:left">Club</th><th>V</th><th>V%</th><th>TS</th><th>TR</th><th>Ind</th></tr></thead>
+      <tbody>`;
+    stands.forEach((s,i)=>{
+      const f=fById(s.id);
+      body+=`<tr>
+        <td class="rank">${i+1}</td>
+        <td style="text-align:left">${esc(f.name)}</td>
+        <td style="text-align:left">${esc(f.club||'')}</td>
+        <td>${s.v}</td>
+        <td>${s.bf>0?Math.round(s.vp*100)+'%':'—'}</td>
+        <td>${s.ts}</td>
+        <td>${s.tr}</td>
+        <td>${s.ind>0?'+':''}${s.ind}</td>
+      </tr>`;
+    });
+    body+=`</tbody></table>`;
+  });
+
+  printBase(`${S.compName} — Results`, body);
+}
+
+// ── END PRINT FUNCTIONS ───────────────────────────────────────────────────────
 
 // ── SPECTATOR MODE ──
 function enterSpectatorMode(url){
