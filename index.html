@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Fencing — Competition Manager</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
 :root {
   --bg:#0d0d0f;--surface:#17171a;--surface2:#1f1f24;--surface3:#27272d;
   --line:rgba(255,255,255,0.08);--line2:rgba(255,255,255,0.14);
@@ -37,7 +37,100 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 .sync-dot.ok{background:var(--green);}
 .sync-dot.err{background:var(--red);}
 .sync-dot.busy{background:var(--accent);animation:syncPulse .8s infinite;}
+/* ── NIF-style home screen ── */
+:root {
+  --navy:#0a1628;--navy-mid:#112240;--navy-light:#1a3460;
+  --red-brand:#c8102e;--red-brand-dark:#9b0c22;
+  --gold:#f0b429;
+  --barlow-cond:'Barlow Condensed',sans-serif;
+  --barlow:'Barlow',sans-serif;
+}
+#screen-connect{background:var(--navy);}
+.home-header{
+  background:var(--navy-mid);
+  border-bottom:3px solid var(--red-brand);
+  padding:0 20px;
+  height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.home-logo{
+  font-family:var(--barlow-cond);
+  font-weight:800;font-size:22px;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--white);
+  display:flex;align-items:center;gap:10px;
+}
+.home-logo-badge{
+  background:var(--red-brand);color:#fff;
+  font-size:10px;font-weight:700;
+  padding:3px 7px;border-radius:3px;
+  letter-spacing:.08em;
+}
+.home-section-label{
+  font-family:var(--barlow-cond);
+  font-size:11px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:#8899aa;
+  padding:16px 20px 8px;
+}
+.home-new-btn{
+  display:block;width:calc(100% - 40px);margin:16px 20px 0;
+  padding:15px 20px;
+  background:var(--red-brand);
+  border:none;border-radius:8px;
+  font-family:var(--barlow-cond);font-size:16px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:#fff;cursor:pointer;
+  transition:background .12s;
+}
+.home-new-btn:active{background:var(--red-brand-dark);}
 /* home screen */
+.home-comp-card{
+  background:var(--navy-mid);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px;overflow:hidden;margin-bottom:10px;
+}
+.home-comp-hd{padding:12px 16px 10px;}
+.home-comp-name{
+  font-family:var(--barlow-cond);
+  font-size:18px;font-weight:700;
+  letter-spacing:.03em;
+  margin-bottom:3px;
+}
+.home-comp-meta{font-size:11px;color:#8899aa;font-family:var(--barlow);}
+.home-comp-actions{
+  display:flex;gap:10px;
+  padding:10px 14px 12px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.home-comp-btn{
+  padding:9px 20px;border-radius:6px;
+  border:none;cursor:pointer;
+  font-family:var(--barlow-cond);font-size:13px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  transition:all .12s;
+}
+.home-comp-btn:active{transform:scale(.97);}
+.home-comp-btn.score{background:var(--red-brand);color:#fff;}
+.home-comp-btn.score:active{background:var(--red-brand-dark);}
+.home-comp-btn.watch{background:rgba(255,255,255,0.08);color:#c5d0db;border:1px solid rgba(255,255,255,0.14);}
+.home-comp-btn.watch:active{background:rgba(255,255,255,0.14);}
+.home-comp-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle;}
+.home-comp-status-dot.active{background:var(--green);}
+.home-comp-status-dot.complete{background:#8899aa;}
+.home-advanced-link{
+  text-align:center;padding:12px 20px 24px;
+}
+.home-advanced-link button{
+  background:none;border:none;
+  color:#8899aa;font-size:11px;
+  font-family:var(--barlow);
+  cursor:pointer;padding:8px;
+  letter-spacing:.03em;
+}
+.home-url-panel{padding:0 20px 20px;}
+.home-url-panel .card{background:var(--navy-mid);border-color:rgba(255,255,255,0.1);}
 .home-comp-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px;}
 .home-comp-hd{padding:14px 16px 10px;}
 .home-comp-name{font-family:var(--display);font-size:17px;font-weight:700;margin-bottom:3px;}
@@ -266,29 +359,31 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <!-- HOME SCREEN -->
 <div id="screen-connect" class="screen active">
-  <div class="setup-hero" style="padding-bottom:16px;">
-    <div class="hi">🤺</div>
-    <h1>Fencing Competitions</h1>
-    <p id="home-subtitle">Loading…</p>
+  <!-- Header -->
+  <div class="home-header">
+    <div class="home-logo">
+      Competition Manager
+      <span class="home-logo-badge">FENCING</span>
+    </div>
+    <div id="home-subtitle" style="font-family:var(--barlow);font-size:12px;color:#8899aa;"></div>
   </div>
 
-  <!-- New competition button -->
-  <div style="padding:16px 20px 0;">
-    <button class="btn btn-accent" onclick="startNewCompetition()">+ New Competition</button>
-  </div>
+  <!-- New competition -->
+  <button class="home-new-btn" onclick="startNewCompetition()">+ New Competition</button>
 
   <!-- Competition list -->
-  <div id="home-comp-list" style="padding:12px 20px 0;">
-    <div style="text-align:center;padding:32px 0;color:var(--grey2);font-size:14px;">Loading competitions…</div>
+  <div class="home-section-label">Competitions</div>
+  <div id="home-comp-list" style="padding:0 20px 0;">
+    <div style="text-align:center;padding:32px 0;color:#8899aa;font-size:14px;font-family:var(--barlow);">Loading competitions…</div>
   </div>
 
   <!-- Advanced / change URL -->
-  <div style="padding:8px 20px 24px;text-align:center;">
-    <button onclick="showAdvancedUrl()" style="background:none;border:none;color:var(--grey2);font-size:12px;font-family:var(--mono);cursor:pointer;padding:8px;">⚙ Advanced: change backend URL</button>
+  <div class="home-advanced-link">
+    <button onclick="showAdvancedUrl()">⚙ Advanced: change backend URL</button>
   </div>
 
   <!-- Advanced URL panel (hidden by default) -->
-  <div id="advanced-url-panel" style="display:none;padding:0 20px 24px;">
+  <div id="advanced-url-panel" class="home-url-panel" style="display:none;">
     <div class="card">
       <div class="section">
         <span class="lbl">Apps Script Web App URL</span>
@@ -500,6 +595,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
 </div>
 
+<!-- CONFIRM DRAW OVERWRITE MODAL -->
+<div class="modal-overlay" id="confirm-draw-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚠️ Overwrite poule results?</div>
+    <div class="modal-body">
+      <p style="color:var(--grey2);font-size:14px;line-height:1.6;">
+        Poule results have already been entered. Confirming the draw again will <strong style="color:var(--red)">permanently delete all scores</strong> and restart the poules from scratch.<br><br>Are you sure?
+      </p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="doConfirmDraw()">Yes, overwrite everything</button>
+      <button class="btn btn-ghost" onclick="closeModal('confirm-draw-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- RESET MODAL -->
 <div class="modal-overlay" id="reset-modal">
   <div class="modal-sheet">
@@ -631,8 +743,8 @@ async function loadHomeScreen(){
           </div>
         </div>
         <div class="home-comp-actions">
-          ${isActive?`<button class="home-comp-btn score" onclick="homeScore('${comp.id}')">🎯 Score</button>`:''}
-          <button class="home-comp-btn watch" onclick="homeWatch('${comp.id}')">👁 Watch</button>
+          ${isActive?`<button class="home-comp-btn score" onclick="homeScore('${comp.id}')">Score</button>`:''}
+          <button class="home-comp-btn watch" onclick="homeWatch('${comp.id}')">Watch</button>
         </div>
       </div>`;
     }).join('');
@@ -1012,12 +1124,28 @@ const FIE={
 function boutOrder(n){if(FIE[n])return FIE[n];const b=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)b.push([i,j]);return b;}
 
 function confirmDraw(){
+  // Warn if poule results already exist
+  const hasResults=S.pools&&S.pools.some(p=>p.bouts.some(b=>b.done));
+  if(hasResults){
+    openModal('confirm-draw-modal');
+    return;
+  }
+  doConfirmDraw();
+}
+function doConfirmDraw(){
   S.pools=S.draft.map(pool=>{
     const ord=boutOrder(pool.fencers.length);
     return{id:uid(),name:pool.name,fencers:pool.fencers,
       bouts:ord.map(([a,b])=>({id:uid(),f1:pool.fencers[a],f2:pool.fencers[b],s1:null,s2:null,done:false}))};
   });
-  S.activePool=0;save();enableNav('poules');showScreen('poules');
+  S.de=null;S.deComplete=false;
+  S.activePool=0;
+  // Disable and clear DE tab
+  const deBtn=document.getElementById('nav-de');
+  if(deBtn)deBtn.disabled=true;
+  document.getElementById('de-content').innerHTML='';
+  closeModal('confirm-draw-modal');
+  save();enableNav('poules');showScreen('poules');
 }
 
 // ── POULES ──
@@ -1143,34 +1271,43 @@ function directScore(side,mx){
   let v=parseInt(el.value);
   if(isNaN(v)||v<0)v=0;
   if(v>mx)v=mx;
-  el.value=v;
+  // Only update value if it changed (avoids cursor jump)
+  if(el.value!==String(v))el.value=v;
   if(side===1)TS.s1=v;else TS.s2=v;
-  // Full re-render so +/- buttons and Confirm update correctly
-  const{type,pi,bi,ri,mi}=AB;
-  let f1,f2,done,mx2;
-  if(type==='poule'){const b=S.pools[pi].bouts[bi];f1=fById(b.f1);f2=fById(b.f2);done=b.done;mx2=5;}
-  else{const m=S.de.rounds[ri].matches[mi];f1=fById(m.top.fid);f2=fById(m.bot.fid);done=m.winner!=null;mx2=15;}
-  renderBoutModal(f1,f2,mx2,done);
-  // Re-focus the input that was being typed in (re-render clears focus)
-  setTimeout(()=>{
-    const refocus=document.getElementById('direct-s'+(side===1?'1':'2'));
-    if(refocus){refocus.focus();const len=refocus.value.length;refocus.setSelectionRange(len,len);}
-  },0);
+  // Targeted DOM update — no full re-render, no stutter
+  updateBoutModalState(mx);
+}
+
+function updateBoutModalState(mx){
+  const{s1,s2}=TS;
+  // Score displays
+  const d1=document.getElementById('score-disp-1');
+  const d2=document.getElementById('score-disp-2');
+  if(d1){d1.textContent=s1;d1.className='score-num'+(s1>s2?' leading':'');}
+  if(d2){d2.textContent=s2;d2.className='score-num'+(s2>s1?' leading':'');}
+  // Sync the other direct input too
+  const ds1=document.getElementById('direct-s1');
+  const ds2=document.getElementById('direct-s2');
+  if(ds1&&ds1!==document.activeElement)ds1.value=s1;
+  if(ds2&&ds2!==document.activeElement)ds2.value=s2;
+  // +/- button states
+  const btns=document.querySelectorAll('#bout-modal .sbtn');
+  // order: plus1, minus1, plus2, minus2
+  const plusBtns=document.querySelectorAll('#bout-modal .sbtn-plus');
+  const minusBtns=document.querySelectorAll('#bout-modal .sbtn-minus');
+  if(plusBtns[0])plusBtns[0].disabled=s1>=mx;
+  if(minusBtns[0])minusBtns[0].disabled=s1<=0;
+  if(plusBtns[1])plusBtns[1].disabled=s2>=mx;
+  if(minusBtns[1])minusBtns[1].disabled=s2<=0;
+  // Draw error and confirm button
+  const errDiv=document.getElementById('bout-draw-error');
+  if(errDiv)errDiv.style.display=(s1===s2&&(s1>0||s2>0))?'block':'none';
 }
 
 function adj(side,delta,mx){
   if(side===1)TS.s1=Math.max(0,Math.min(mx,TS.s1+delta));
   else TS.s2=Math.max(0,Math.min(mx,TS.s2+delta));
-  // sync direct inputs
-  const d1=document.getElementById('direct-s1');
-  const d2=document.getElementById('direct-s2');
-  if(d1)d1.value=TS.s1;
-  if(d2)d2.value=TS.s2;
-  const{type,pi,bi,ri,mi}=AB;
-  let f1,f2,done,mx2;
-  if(type==='poule'){const b=S.pools[pi].bouts[bi];f1=fById(b.f1);f2=fById(b.f2);done=b.done;mx2=5;}
-  else{const m=S.de.rounds[ri].matches[mi];f1=fById(m.top.fid);f2=fById(m.bot.fid);done=m.winner!=null;mx2=15;}
-  renderBoutModal(f1,f2,mx2,done);
+  updateBoutModalState(mx);
 }
 
 function confirmBout(){
