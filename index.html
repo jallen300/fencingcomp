@@ -710,8 +710,11 @@ async function loadHomeScreen(){
 function startNewCompetition(){
   competitionId='comp_'+Math.random().toString(36).slice(2,9);
   localStorage.setItem('fence_comp_id',competitionId);
+  // Always clear PINs for a new competition — fresh ones generated when draw is made
   competitionPin=null;
+  organiserPin=null;
   localStorage.removeItem('fence_comp_pin');
+  localStorage.removeItem('fence_organiser_pin');
   localStorage.setItem('fence_organiser_'+competitionId,'1');
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
   selectedLayout=null;
@@ -1792,10 +1795,23 @@ async function submitPin(){
       closeModal('pin-modal');
       if(_pinCallback){_pinCallback(true);_pinCallback=null;}
     }else{
-      const errEl=document.getElementById('pin-error');
-      if(errEl){errEl.textContent='Incorrect PIN. Try again or choose View only.';errEl.style.display='block';}
-      clearPinInput();
-      if(btn){btn.disabled=false;btn.textContent='Confirm PIN';}
+      // Scorer PIN didn't match — check if it's the organiser PIN
+      const orgResp=await fetch(backendUrl,{method:'POST',body:JSON.stringify({action:'verifyOrganiserPin',id:spectatorCompId||competitionId,pin})});
+      const orgJson=await orgResp.json();
+      if(orgJson.valid){
+        // Organiser PIN matched — grant full organiser access
+        organiserPin=pin;
+        localStorage.setItem('fence_organiser_pin',pin);
+        if(competitionId)localStorage.setItem('fence_organiser_'+competitionId,'1');
+        pinVerified=true;
+        closeModal('pin-modal');
+        if(_pinCallback){_pinCallback(true);_pinCallback=null;}
+      }else{
+        const errEl=document.getElementById('pin-error');
+        if(errEl){errEl.textContent='Incorrect PIN. Try again or choose View only.';errEl.style.display='block';}
+        clearPinInput();
+        if(btn){btn.disabled=false;btn.textContent='Confirm PIN';}
+      }
     }
   }catch(e){
     const errEl=document.getElementById('pin-error');
