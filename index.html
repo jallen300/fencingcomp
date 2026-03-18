@@ -717,6 +717,9 @@ function startNewCompetition(){
   selectedLayout=null;
   document.getElementById('bottom-nav').style.display='flex';
   ['draw','poules','de'].forEach(n=>{const b=document.getElementById('nav-'+n);if(b)b.disabled=true;});
+  // Explicitly clear the name input so previous comp name doesn't linger
+  const nameInput=document.getElementById('comp-name');
+  if(nameInput)nameInput.value='';
   syncNavState();
   showScreen('setup');
   startPolling();
