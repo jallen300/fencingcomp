@@ -28,7 +28,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 .nav-btn .ni{font-size:19px;line-height:1;}
 .nav-btn.active{color:var(--accent);}
 .nav-btn:disabled{opacity:.28;pointer-events:none;}
-/* sync bar */
 #sync-bar{position:fixed;top:0;left:0;right:0;height:3px;background:transparent;z-index:999;transition:background .3s;}
 #sync-bar.syncing{background:var(--accent);animation:syncPulse 1s ease-in-out infinite;}
 #sync-bar.error{background:var(--red);}
@@ -38,7 +37,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 .sync-dot.ok{background:var(--green);}
 .sync-dot.err{background:var(--red);}
 .sync-dot.busy{background:var(--accent);animation:syncPulse .8s infinite;}
-/* shared */
 .page-header{padding:28px 20px 12px;border-bottom:1px solid var(--line);background:var(--bg);}
 .page-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.01em;}
 .page-sub{font-size:12px;color:var(--grey2);margin-top:3px;font-family:var(--mono);}
@@ -67,14 +65,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .pill-accent{background:var(--accent-dim);color:var(--accent);}
 .pill-green{background:var(--green-dim);color:var(--green);}
 .pill-grey{background:var(--surface3);color:var(--grey2);}
-.pill-red{background:var(--red-dim);color:var(--red);}
 .spacer{height:16px;}.spacer-sm{height:8px;}
 .px{padding-left:20px;padding-right:20px;}
 .mt-12{margin-top:12px;}
 .empty-state{text-align:center;padding:52px 28px;color:var(--grey2);font-size:14px;line-height:1.8;}
 .empty-state .ei{font-size:44px;margin-bottom:14px;}
 .empty-state strong{color:var(--white);display:block;font-size:16px;margin-bottom:6px;font-family:var(--display);}
-/* modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:flex-end;justify-content:center;z-index:200;}
 .modal-overlay.open{display:flex;}
 .modal-sheet{width:100%;max-width:480px;background:var(--surface);border-radius:20px 20px 0 0;border:1px solid var(--line2);border-bottom:none;padding-bottom:var(--safe-bottom);max-height:92vh;overflow-y:auto;animation:slideUp .22s ease-out;}
@@ -89,14 +85,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .setup-hero h1{font-family:var(--display);font-size:24px;font-weight:800;letter-spacing:-.02em;}
 .setup-hero p{font-size:13px;color:var(--grey2);margin-top:5px;}
 .fencer-list{list-style:none;}
-.fencer-row{display:grid;grid-template-columns:40px 1fr auto;align-items:center;border-bottom:1px solid var(--line);}
+.fencer-row{display:grid;grid-template-columns:40px 1fr auto auto;align-items:center;border-bottom:1px solid var(--line);}
 .fencer-row:last-child{border-bottom:none;}
-.fencer-seed-cell{display:flex;align-items:center;justify-content:center;height:100%;border-right:1px solid var(--line);background:var(--surface2);padding:12px 0;}
+.fencer-seed-cell{display:flex;align-items:center;justify-content:center;height:100%;border-right:1px solid var(--line);background:var(--surface2);padding:8px 0;cursor:pointer;}
+.fencer-seed-cell:active{background:var(--surface3);}
 .fsb{font-family:var(--mono);font-size:11px;color:var(--grey2);width:24px;height:24px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;}
 .fsb.seeded{background:var(--accent-dim);color:var(--accent);}
 .fencer-info{padding:11px 13px;min-width:0;}
 .fencer-name-t{font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fencer-club-t{font-size:11px;color:var(--grey2);margin-top:1px;}
+.fencer-edit-btn{background:none;border:none;color:var(--grey2);padding:8px 6px;cursor:pointer;font-size:14px;}
 .fencer-del{background:none;border:none;color:var(--grey);padding:12px 14px;cursor:pointer;font-size:18px;line-height:1;}
 .fencer-del:active{color:var(--red);}
 .add-row{display:grid;grid-template-columns:58px 1fr;border-top:1px solid var(--line);}
@@ -107,6 +105,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .name-cell input:focus{border-color:transparent;}
 .add-inline-btn{background:var(--accent);border:none;color:#0d0d0f;padding:0 18px;font-family:var(--display);font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;}
 .add-inline-btn:active{background:#cdd91e;}
+/* layout chips */
+.layout-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.layout-chip{padding:7px 14px;border-radius:999px;border:1px solid var(--line2);background:none;color:var(--grey2);font-size:12px;font-family:var(--mono);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.layout-chip.active{background:var(--accent-dim);border-color:rgba(232,244,34,.4);color:var(--accent);}
 /* draw */
 .draw-pool-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
 .draw-pool-hd{background:var(--surface2);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);}
@@ -143,12 +145,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .standings-tbl .num{text-align:center;}
 .place-circle{width:22px;height:22px;border-radius:50%;background:var(--surface3);color:var(--grey2);display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;}
 .place-1 .place-circle{background:var(--accent-dim);color:var(--accent);}
-/* bout modal */
+/* bout modal — score entry */
 .score-grid{display:grid;grid-template-columns:1fr 40px 1fr;align-items:center;padding:8px 0 4px;}
 .scorer-side{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 8px;}
 .scorer-name{font-family:var(--display);font-size:16px;font-weight:700;text-align:center;line-height:1.2;}
 .scorer-club{font-size:11px;color:var(--grey2);text-align:center;}
-.score-num{font-family:var(--mono);font-size:68px;font-weight:500;line-height:1;color:var(--white);transition:color .15s;min-width:72px;text-align:center;}
+.score-num{font-family:var(--mono);font-size:68px;font-weight:500;line-height:1;color:var(--white);min-width:72px;text-align:center;}
 .score-num.leading{color:var(--accent);}
 .score-btns{display:flex;flex-direction:column;align-items:center;gap:8px;}
 .sbtn{width:58px;height:58px;border-radius:14px;border:none;font-size:26px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .1s;font-family:var(--display);}
@@ -158,6 +160,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .sbtn:disabled{opacity:.18;pointer-events:none;}
 .vs-divider{display:flex;align-items:center;justify-content:center;}
 .vs-label{font-family:var(--mono);font-size:11px;color:var(--grey);text-transform:uppercase;}
+/* direct score input row */
+.direct-score-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:0 8px 8px;}
+.direct-score-row input{background:var(--surface2);border:1px solid var(--line2);border-radius:10px;color:var(--white);font-family:var(--mono);font-size:28px;padding:10px 8px;text-align:center;width:100%;outline:none;}
+.direct-score-row input:focus{border-color:var(--accent);}
+.direct-score-divider{font-family:var(--mono);font-size:18px;color:var(--grey2);text-align:center;}
 /* DE */
 .bracket-scroll{overflow-x:auto;padding:14px 20px 8px;-webkit-overflow-scrolling:touch;}
 .bracket-wrap{display:flex;gap:0;align-items:flex-start;}
@@ -192,7 +199,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .champ-lbl{font-family:var(--mono);font-size:10px;color:var(--grey2);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;}
 .champ-name{font-family:var(--display);font-size:26px;font-weight:800;color:var(--accent);letter-spacing:-.01em;}
 .champ-club{font-size:12px;color:var(--grey2);margin-top:4px;}
-/* connection setup screen */
+/* connection screen */
 .connect-card{margin:20px;background:var(--surface);border:1px solid var(--line2);border-radius:16px;overflow:hidden;}
 .connect-card .section{padding:20px;}
 .url-input{font-family:var(--mono);font-size:13px;word-break:break-all;}
@@ -200,6 +207,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .info-box strong{color:var(--white);}
 .info-box ol{padding-left:18px;margin-top:8px;}
 .info-box li{margin-bottom:4px;}
+/* results screen */
+.results-section{padding:12px 20px 4px;}
+.results-pool-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.results-pool-hd{background:var(--surface2);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);}
+.results-pool-title{font-family:var(--display);font-size:14px;font-weight:700;}
+.results-pool-meta{font-family:var(--mono);font-size:11px;color:var(--grey2);}
+.de-result-row{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;}
+.de-result-row:last-child{border-bottom:none;}
+.de-result-round{font-family:var(--mono);font-size:10px;color:var(--grey2);min-width:80px;text-transform:uppercase;letter-spacing:.05em;}
+.de-result-winner{font-size:13px;font-weight:600;}
+.de-result-score{font-family:var(--mono);font-size:12px;color:var(--grey2);margin-top:2px;}
 </style>
 </head>
 <body>
@@ -207,7 +225,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <div id="sync-bar"></div>
 <div class="sync-status"><div class="sync-dot" id="sync-dot"></div><span id="sync-label"></span></div>
 
-<!-- ══ CONNECTION SETUP ══ -->
+<!-- CONNECTION SETUP -->
 <div id="screen-connect" class="screen active">
   <div class="setup-hero">
     <div class="hi">🔗</div>
@@ -223,8 +241,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <li>Follow the setup instructions at the top of that file</li>
           <li>Paste the Web App URL below</li>
         </ol>
-        <br>
-        <strong>Already set up?</strong> Just paste your existing Web App URL.
+        <br><strong>Already set up?</strong> Just paste your existing Web App URL.
       </div>
       <span class="lbl">Apps Script Web App URL</span>
       <input type="text" id="backend-url-input" class="url-input" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" autocorrect="off" spellcheck="false">
@@ -236,7 +253,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
 </div>
 
-<!-- ══ SETUP ══ -->
+<!-- SETUP -->
 <div id="screen-setup" class="screen">
   <div class="setup-hero">
     <div class="hi">🤺</div>
@@ -250,13 +267,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <input type="text" id="comp-name" placeholder="e.g. Club Épée Open" autocomplete="off">
       </div>
       <div class="section" style="padding-top:10px;">
-        <span class="lbl">Poule size preference</span>
-        <select id="pool-pref">
-          <option value="auto">Auto (recommended)</option>
-          <option value="5">Prefer 5 per poule</option>
-          <option value="6">Prefer 6 per poule</option>
-          <option value="7">Prefer 7 per poule</option>
-        </select>
+        <span class="lbl">Poule layout</span>
+        <div class="layout-chips" id="layout-chips">
+          <!-- populated dynamically once fencers are added -->
+          <span style="font-size:12px;color:var(--grey2);">Add fencers to see layout options</span>
+        </div>
       </div>
     </div>
     <div class="card mt-12">
@@ -274,44 +289,49 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <button class="add-inline-btn" onclick="addFencer()">Add</button>
         </div>
       </div>
-      <div style="padding:8px 14px;font-size:11px;color:var(--grey2);border-top:1px solid var(--line);">Seed # + Name. Club optional in brackets: <em>Smith (London FC)</em></div>
+      <div style="padding:8px 14px;font-size:11px;color:var(--grey2);border-top:1px solid var(--line);">Seed # + Name. Club optional in brackets: <em>Smith (London FC)</em>. Tap a seed badge to edit it.</div>
     </div>
-    <div class="spacer"></div>
+    <div style="height:16px;"></div>
     <button class="btn btn-accent" id="draw-btn" onclick="generateDraw()" disabled style="margin:0 20px;width:calc(100% - 40px);">Preview Draw</button>
-    <div class="spacer-sm"></div>
+    <div style="height:8px;"></div>
     <div style="display:flex;gap:10px;margin:0 20px;">
       <button class="btn btn-ghost btn-sm" onclick="changeBackend()" style="flex:1;">⚙ Change URL</button>
       <button class="btn btn-danger btn-sm" id="reset-btn" onclick="confirmReset()" style="display:none;flex:1;">↺ Reset</button>
     </div>
-    <div class="spacer"></div>
+    <div style="height:20px;"></div>
   </div>
 </div>
 
-<!-- ══ DRAW REVIEW ══ -->
+<!-- DRAW REVIEW -->
 <div id="screen-draw" class="screen">
   <div class="page-header">
     <div class="page-title">Review Draw</div>
     <div class="page-sub" id="draw-sub">Swap fencers between poules if needed</div>
   </div>
   <div style="padding:14px 0 0;" id="draw-container"></div>
-  <div class="spacer-sm"></div>
+  <div style="height:8px;"></div>
   <div style="padding:0 20px;">
     <div id="clash-warn" style="display:none;padding:10px 13px;background:var(--orange-dim);border:1px solid rgba(255,153,68,.3);border-radius:10px;font-size:12px;color:var(--orange);margin-bottom:12px;line-height:1.5;"></div>
     <button class="btn btn-accent" onclick="confirmDraw()">✓ Confirm Draw &amp; Start Poules</button>
-    <div class="spacer-sm"></div>
+    <div style="height:8px;"></div>
     <button class="btn btn-ghost" onclick="reshuffleDraw()">↺ Re-shuffle Draw</button>
   </div>
-  <div class="spacer"></div>
+  <div style="height:20px;"></div>
 </div>
 
-<!-- ══ POULES ══ -->
+<!-- POULES -->
 <div id="screen-poules" class="screen">
   <div id="poules-content"></div>
 </div>
 
-<!-- ══ DE ══ -->
+<!-- DE -->
 <div id="screen-de" class="screen">
   <div id="de-content"></div>
+</div>
+
+<!-- RESULTS -->
+<div id="screen-results" class="screen">
+  <div id="results-content"></div>
 </div>
 
 <nav id="bottom-nav">
@@ -319,6 +339,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <button class="nav-btn" id="nav-draw" onclick="showScreen('draw')" disabled><span class="ni">🔀</span>Draw</button>
   <button class="nav-btn" id="nav-poules" onclick="showScreen('poules')" disabled><span class="ni">🎯</span>Poules</button>
   <button class="nav-btn" id="nav-de" onclick="showScreen('de')" disabled><span class="ni">🏆</span>DE</button>
+  <button class="nav-btn" id="nav-results" onclick="showScreen('results')" disabled><span class="ni">📋</span>Results</button>
 </nav>
 
 <!-- BOUT MODAL -->
@@ -328,6 +349,26 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="modal-title" id="bout-modal-title">Bout</div>
     <div class="modal-body" id="bout-modal-body"></div>
     <div class="modal-actions" id="bout-modal-actions"></div>
+  </div>
+</div>
+
+<!-- EDIT FENCER MODAL -->
+<div class="modal-overlay" id="edit-fencer-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Edit Fencer</div>
+    <div class="modal-body">
+      <span class="lbl">Seed</span>
+      <input type="number" id="edit-seed" min="1" placeholder="Seed number">
+      <span class="lbl" style="margin-top:14px;">Name</span>
+      <input type="text" id="edit-name" placeholder="Name" autocomplete="off">
+      <span class="lbl" style="margin-top:14px;">Club</span>
+      <input type="text" id="edit-club" placeholder="Club (optional)" autocomplete="off">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-accent" onclick="saveEditFencer()">Save</button>
+      <button class="btn btn-ghost" onclick="closeModal('edit-fencer-modal')">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -346,292 +387,298 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <script>
 'use strict';
-// ══════════════════════════════════════════════════════
-// CONFIG & STATE
-// ══════════════════════════════════════════════════════
-const URL_KEY = 'fence_backend_url';
-const POLL_INTERVAL = 3000; // ms
+const URL_KEY='fence_backend_url';
+const POLL_INTERVAL=3000;
+let backendUrl=localStorage.getItem(URL_KEY)||'';
+let pollTimer=null;
+let lastStateHash='';
+let isSyncing=false;
+let editingFencerId=null;
+let selectedLayout=null; // null = auto
 
-let backendUrl = localStorage.getItem(URL_KEY) || '';
-let pollTimer = null;
-let lastStateHash = '';
-let isSyncing = false;
-let modalOpenDuringPoll = false; // don't re-render while modal is open
-
-let S = {
-  compName: '',
-  fencers: [],
-  draft: null,
-  pools: null,
-  de: null,
-  deComplete: false,
-  screen: 'setup',
-  activePool: 0,
+let S={
+  compName:'',fencers:[],draft:null,pools:null,
+  de:null,deComplete:false,screen:'setup',activePool:0,
 };
 
-// ══════════════════════════════════════════════════════
-// SYNC — READ / WRITE
-// ══════════════════════════════════════════════════════
-function setSyncStatus(status, label) {
-  const dot = document.getElementById('sync-dot');
-  const lbl = document.getElementById('sync-label');
-  const bar = document.getElementById('sync-bar');
-  dot.className = 'sync-dot ' + (status === 'ok' ? 'ok' : status === 'busy' ? 'busy' : status === 'err' ? 'err' : '');
-  bar.className = status === 'busy' ? 'syncing' : status === 'err' ? 'error' : '';
-  lbl.textContent = label || '';
+// ── SYNC ──
+function setSyncStatus(status,label){
+  const dot=document.getElementById('sync-dot');
+  const lbl=document.getElementById('sync-label');
+  const bar=document.getElementById('sync-bar');
+  dot.className='sync-dot '+(status==='ok'?'ok':status==='busy'?'busy':status==='err'?'err':'');
+  bar.className=status==='busy'?'syncing':status==='err'?'error':'';
+  lbl.textContent=label||'';
 }
-
-async function pushState() {
-  if (!backendUrl) return;
-  setSyncStatus('busy', 'Saving…');
-  try {
-    const resp = await fetch(backendUrl, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'write', state: S }),
-    });
-    const json = await resp.json();
-    if (!json.ok) throw new Error(json.error || 'Write failed');
-    lastStateHash = stateHash(S);
-    setSyncStatus('ok', 'Saved');
-    setTimeout(() => setSyncStatus('ok', ''), 2000);
-  } catch (e) {
-    setSyncStatus('err', 'Save failed');
-  }
+async function pushState(logMsg){
+  if(!backendUrl)return;
+  setSyncStatus('busy','Saving…');
+  try{
+    const resp=await fetch(backendUrl,{method:'POST',body:JSON.stringify({action:'write',state:S,logMessage:logMsg||''})});
+    const json=await resp.json();
+    if(!json.ok)throw new Error(json.error||'Write failed');
+    lastStateHash=stateHash(S);
+    setSyncStatus('ok','Saved');
+    setTimeout(()=>setSyncStatus('ok',''),2000);
+  }catch(e){setSyncStatus('err','Save failed');}
 }
-
-async function pollState() {
-  if (!backendUrl || isSyncing) return;
-  isSyncing = true;
-  try {
-    const resp = await fetch(backendUrl + '?action=read&t=' + Date.now());
-    const json = await resp.json();
-    if (!json.ok) throw new Error(json.error);
-    const remote = json.state;
-    if (!remote) { isSyncing = false; return; }
-    const remoteHash = stateHash(remote);
-    if (remoteHash !== lastStateHash) {
-      lastStateHash = remoteHash;
-      const openScreen = S.screen;
-      S = remote;
-      S.screen = openScreen; // keep local screen position
+async function pollState(){
+  if(!backendUrl||isSyncing)return;
+  isSyncing=true;
+  try{
+    const resp=await fetch(backendUrl+'?action=read&t='+Date.now());
+    const json=await resp.json();
+    if(!json.ok)throw new Error(json.error);
+    const remote=json.state;
+    if(!remote){isSyncing=false;return;}
+    const rh=stateHash(remote);
+    if(rh!==lastStateHash){
+      lastStateHash=rh;
+      const openScreen=S.screen;
+      S=remote;S.screen=openScreen;
       syncNavState();
-      if (!document.getElementById('bout-modal').classList.contains('open')) {
-        rerenderCurrentScreen();
-      }
-      setSyncStatus('ok', 'Updated');
-      setTimeout(() => setSyncStatus('ok', ''), 1500);
+      if(!document.getElementById('bout-modal').classList.contains('open'))rerenderCurrentScreen();
+      setSyncStatus('ok','Updated');
+      setTimeout(()=>setSyncStatus('ok',''),1500);
     }
-  } catch (e) {
-    setSyncStatus('err', 'Sync error');
+  }catch(e){setSyncStatus('err','Sync error');}
+  isSyncing=false;
+}
+function stateHash(s){
+  const{compName,fencers,draft,pools,de,deComplete}=s||{};
+  return JSON.stringify({compName,fencers,draft,pools,de,deComplete});
+}
+function startPolling(){if(pollTimer)clearInterval(pollTimer);pollTimer=setInterval(pollState,POLL_INTERVAL);}
+async function save(logMsg){
+  localStorage.setItem('fence_state_cache',JSON.stringify(S));
+  await pushState(logMsg);
+}
+function loadFromCache(){try{const r=localStorage.getItem('fence_state_cache');if(r)Object.assign(S,JSON.parse(r));}catch(e){}}
+
+// ── CONNECTION ──
+async function connectBackend(){
+  const input=document.getElementById('backend-url-input');
+  const url=input.value.trim();
+  const errEl=document.getElementById('connect-error');
+  errEl.style.display='none';
+  if(!url||!url.startsWith('https://script.google.com')){
+    errEl.textContent='That doesn\'t look like a valid Apps Script URL. It should start with https://script.google.com/macros/s/';
+    errEl.style.display='block';return;
   }
-  isSyncing = false;
-}
-
-function stateHash(s) {
-  // Simple hash — serialise key parts only (not the screen position)
-  const { compName, fencers, draft, pools, de, deComplete } = s || {};
-  return JSON.stringify({ compName, fencers, draft, pools, de, deComplete });
-}
-
-function startPolling() {
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(pollState, POLL_INTERVAL);
-}
-
-// Save to backend and also cache locally for resilience
-async function save() {
-  localStorage.setItem('fence_state_cache', JSON.stringify(S));
-  await pushState();
-}
-
-function loadFromCache() {
-  try {
-    const raw = localStorage.getItem('fence_state_cache');
-    if (raw) { const c = JSON.parse(raw); Object.assign(S, c); }
-  } catch(e) {}
-}
-
-// ══════════════════════════════════════════════════════
-// CONNECTION SETUP
-// ══════════════════════════════════════════════════════
-async function connectBackend() {
-  const input = document.getElementById('backend-url-input');
-  const url = input.value.trim();
-  const errEl = document.getElementById('connect-error');
-  errEl.style.display = 'none';
-
-  if (!url || !url.startsWith('https://script.google.com')) {
-    errEl.textContent = 'That doesn\'t look like a valid Apps Script URL. It should start with https://script.google.com/macros/s/';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  const btn = document.querySelector('#screen-connect .btn-accent');
-  btn.disabled = true; btn.textContent = 'Connecting…';
-  setSyncStatus('busy', 'Connecting…');
-
-  try {
-    const resp = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'ping' }),
-    });
-    const json = await resp.json();
-    if (!json.ok) throw new Error(json.error || 'Backend returned error');
-
-    backendUrl = url;
-    localStorage.setItem(URL_KEY, url);
-    setSyncStatus('ok', 'Connected');
-
-    // Pull existing state from backend
-    const stateResp = await fetch(url + '?action=read&t=' + Date.now());
-    const stateJson = await stateResp.json();
-    if (stateJson.ok && stateJson.state) {
-      Object.assign(S, stateJson.state);
-      lastStateHash = stateHash(S);
-    }
-
-    syncNavState();
-    showScreen(S.screen || 'setup');
-    startPolling();
-  } catch(e) {
-    setSyncStatus('err', 'Failed');
-    errEl.textContent = 'Could not connect: ' + e.message + '. Make sure you\'ve deployed the script as a Web App with access set to "Anyone".';
-    errEl.style.display = 'block';
-    btn.disabled = false; btn.textContent = 'Connect';
+  const btn=document.querySelector('#screen-connect .btn-accent');
+  btn.disabled=true;btn.textContent='Connecting…';
+  setSyncStatus('busy','Connecting…');
+  try{
+    const resp=await fetch(url,{method:'POST',body:JSON.stringify({action:'ping'})});
+    const json=await resp.json();
+    if(!json.ok)throw new Error(json.error||'Backend returned error');
+    backendUrl=url;localStorage.setItem(URL_KEY,url);
+    setSyncStatus('ok','Connected');
+    const sr=await fetch(url+'?action=read&t='+Date.now());
+    const sj=await sr.json();
+    if(sj.ok&&sj.state){Object.assign(S,sj.state);lastStateHash=stateHash(S);}
+    syncNavState();showScreen(S.screen||'setup');startPolling();
+  }catch(e){
+    setSyncStatus('err','Failed');
+    errEl.textContent='Could not connect: '+e.message+'. Make sure you\'ve deployed the script as a Web App with access set to "Anyone".';
+    errEl.style.display='block';btn.disabled=false;btn.textContent='Connect';
   }
 }
-
-function changeBackend() {
-  if (pollTimer) clearInterval(pollTimer);
-  const input = document.getElementById('backend-url-input');
-  input.value = backendUrl || '';
-  SCREENS.forEach(s => {
-    document.getElementById('screen-'+s).classList.toggle('active', s === 'connect');
-    const b = document.getElementById('nav-'+s); if(b) b.classList.toggle('active', false);
+function changeBackend(){
+  if(pollTimer)clearInterval(pollTimer);
+  document.getElementById('backend-url-input').value=backendUrl||'';
+  SCREENS.forEach(s=>{
+    document.getElementById('screen-'+s).classList.toggle('active',s==='connect');
+    const b=document.getElementById('nav-'+s);if(b)b.classList.remove('active');
   });
   document.getElementById('screen-connect').classList.add('active');
 }
 
-// ══════════════════════════════════════════════════════
-// ROUTING
-// ══════════════════════════════════════════════════════
-const SCREENS = ['connect','setup','draw','poules','de'];
-function showScreen(n) {
-  SCREENS.forEach(s => {
-    document.getElementById('screen-'+s).classList.toggle('active', s === n);
-    const b = document.getElementById('nav-'+s); if(b) b.classList.toggle('active', s === n);
+// ── ROUTING ──
+const SCREENS=['connect','setup','draw','poules','de','results'];
+function showScreen(n){
+  SCREENS.forEach(s=>{
+    document.getElementById('screen-'+s).classList.toggle('active',s===n);
+    const b=document.getElementById('nav-'+s);if(b)b.classList.toggle('active',s===n);
   });
-  S.screen = n;
-  if (n === 'draw') renderDraw();
-  if (n === 'poules') renderPoules();
-  if (n === 'de') renderDE();
+  S.screen=n;
+  if(n==='draw')renderDraw();
+  if(n==='poules')renderPoules();
+  if(n==='de')renderDE();
+  if(n==='results')renderResults();
 }
-
-function rerenderCurrentScreen() {
-  const n = S.screen;
-  if (n === 'setup') renderSetup();
-  if (n === 'draw') renderDraw();
-  if (n === 'poules') renderPoules();
-  if (n === 'de') renderDE();
+function rerenderCurrentScreen(){
+  const n=S.screen;
+  if(n==='setup')renderSetup();
+  if(n==='draw')renderDraw();
+  if(n==='poules')renderPoules();
+  if(n==='de')renderDE();
+  if(n==='results')renderResults();
 }
-
-function syncNavState() {
-  if (S.draft || S.pools) enableNav('draw');
-  if (S.pools) enableNav('poules');
-  if (S.de) enableNav('de');
+function syncNavState(){
+  if(S.draft||S.pools)enableNav('draw');
+  if(S.pools)enableNav('poules');
+  if(S.de)enableNav('de');
+  enableNav('results');
   renderSetup();
 }
+function enableNav(n){const b=document.getElementById('nav-'+n);if(b)b.disabled=false;}
 
-function enableNav(n) { const b = document.getElementById('nav-'+n); if(b) b.disabled = false; }
+// ── UTILS ──
+function uid(){return Math.random().toString(36).slice(2,9);}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fById(id){return S.fencers.find(f=>f.id===id)||{name:'?',club:'',seed:null};}
 
-// ══════════════════════════════════════════════════════
-// UTILITIES
-// ══════════════════════════════════════════════════════
-function uid() { return Math.random().toString(36).slice(2,9); }
-function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fById(id) { return S.fencers.find(f=>f.id===id)||{name:'?',club:'',seed:null}; }
-
-// ══════════════════════════════════════════════════════
-// SETUP
-// ══════════════════════════════════════════════════════
-function parseFencer(raw) {
-  const bm = raw.match(/^(.+?)\s*\((.+)\)\s*$/); if(bm) return {name:bm[1].trim(),club:bm[2].trim()};
-  const dm = raw.match(/^(.+?)\s*[-–]\s*(.+)$/); if(dm) return {name:dm[1].trim(),club:dm[2].trim()};
-  return {name:raw.trim(),club:''};
+// ── POOL LAYOUTS ──
+// Returns all valid layouts for n fencers as [{pools, sizes:[]}]
+// Valid: all pools 5–8 fencers, as equal as possible
+function allValidLayouts(n){
+  const results=[];
+  const minPools=Math.max(1,Math.ceil(n/8));
+  const maxPools=Math.floor(n/5);
+  for(let p=minPools;p<=maxPools;p++){
+    const base=Math.floor(n/p),extra=n%p;
+    const max=base+(extra>0?1:0);
+    if(base>=5&&max<=8){
+      const sizes=Array.from({length:p},(_,i)=>base+(i<extra?1:0));
+      results.push({pools:p,sizes});
+    }
+  }
+  // Also allow single poule if n<=8
+  if(n>=2&&n<=8&&!results.find(r=>r.pools===1)){
+    results.unshift({pools:1,sizes:[n]});
+  }
+  return results;
 }
-function addFencer() {
-  const se=document.getElementById('new-seed'), ne=document.getElementById('new-name');
-  const raw=ne.value.trim(); if(!raw){ne.focus();return;}
-  const {name,club}=parseFencer(raw);
+
+function layoutLabel(layout){
+  // e.g. "4 × 6" or "3×6+1×7"
+  const counts={};
+  layout.sizes.forEach(s=>{counts[s]=(counts[s]||0)+1;});
+  return Object.entries(counts).map(([s,c])=>`${c}×${s}`).join(', ');
+}
+
+function renderLayoutChips(){
+  const n=S.fencers.length;
+  const chips=document.getElementById('layout-chips');
+  if(!chips)return;
+  if(n<2){chips.innerHTML='<span style="font-size:12px;color:var(--grey2);">Add fencers to see layout options</span>';return;}
+  const layouts=allValidLayouts(n);
+  if(!layouts.length){chips.innerHTML=`<span style="font-size:12px;color:var(--orange);">${n} fencers — no valid poule layout (need 5–8 per poule)</span>`;return;}
+  // default selection: most even layout (first in list)
+  if(selectedLayout===null||!layouts.find(l=>l.pools===selectedLayout)){
+    selectedLayout=layouts[0].pools;
+  }
+  chips.innerHTML=layouts.map(l=>`
+    <button class="layout-chip ${l.pools===selectedLayout?'active':''}" onclick="selectLayout(${l.pools})">
+      ${l.pools} poule${l.pools>1?'s':''} (${layoutLabel(l)})
+    </button>`).join('');
+}
+function selectLayout(pools){selectedLayout=pools;renderLayoutChips();}
+
+// ── SETUP ──
+function parseFencer(raw){
+  const bm=raw.match(/^(.+?)\s*\((.+)\)\s*$/);if(bm)return{name:bm[1].trim(),club:bm[2].trim()};
+  const dm=raw.match(/^(.+?)\s*[-–]\s*(.+)$/);if(dm)return{name:dm[1].trim(),club:dm[2].trim()};
+  return{name:raw.trim(),club:''};
+}
+function addFencer(){
+  const se=document.getElementById('new-seed'),ne=document.getElementById('new-name');
+  const raw=ne.value.trim();if(!raw){ne.focus();return;}
+  const{name,club}=parseFencer(raw);
   const seed=se.value.trim()?parseInt(se.value):null;
   S.fencers.push({id:uid(),name,club,seed});
-  se.value=''; ne.value=''; ne.focus();
-  save(); renderSetup();
+  se.value='';ne.value='';ne.focus();
+  save();renderSetup();
 }
-function removeFencer(id) { S.fencers=S.fencers.filter(f=>f.id!==id); save(); renderSetup(); }
-function sortedFencers() { return[...S.fencers].sort((a,b)=>{const as=a.seed??9999,bs=b.seed??9999;return as!==bs?as-bs:a.name.localeCompare(b.name);}); }
+function removeFencer(id){S.fencers=S.fencers.filter(f=>f.id!==id);save();renderSetup();}
+function sortedFencers(){return[...S.fencers].sort((a,b)=>{const as=a.seed??9999,bs=b.seed??9999;return as!==bs?as-bs:a.name.localeCompare(b.name);});}
 
-function renderSetup() {
+function openEditFencer(id){
+  editingFencerId=id;
+  const f=fById(id);
+  document.getElementById('edit-seed').value=f.seed!=null?f.seed:'';
+  document.getElementById('edit-name').value=f.name;
+  document.getElementById('edit-club').value=f.club||'';
+  openModal('edit-fencer-modal');
+}
+function saveEditFencer(){
+  const f=S.fencers.find(x=>x.id===editingFencerId);
+  if(!f){closeModal('edit-fencer-modal');return;}
+  const seedVal=document.getElementById('edit-seed').value.trim();
+  f.seed=seedVal?parseInt(seedVal):null;
+  f.name=document.getElementById('edit-name').value.trim()||f.name;
+  f.club=document.getElementById('edit-club').value.trim();
+  closeModal('edit-fencer-modal');
+  save();renderSetup();
+}
+
+function renderSetup(){
   const list=document.getElementById('fencer-list');
   const badge=document.getElementById('fencer-badge');
   const drawBtn=document.getElementById('draw-btn');
   const resetBtn=document.getElementById('reset-btn');
-  if(!list) return;
+  if(!list)return;
   badge.textContent=S.fencers.length;
   badge.className='pill '+(S.fencers.length?'pill-accent':'pill-grey');
-  drawBtn.disabled=S.fencers.length<2;
+  const layouts=allValidLayouts(S.fencers.length);
+  drawBtn.disabled=S.fencers.length<2||!layouts.length;
   drawBtn.textContent=S.pools?'Re-generate Draw':'Preview Draw';
   resetBtn.style.display=(S.pools||S.fencers.length)?'block':'none';
-  if(S.compName) document.getElementById('comp-name').value=S.compName;
+  if(S.compName)document.getElementById('comp-name').value=S.compName;
+  renderLayoutChips();
   if(!S.fencers.length){list.innerHTML='<li style="padding:18px;text-align:center;color:var(--grey2);font-size:13px;">No fencers yet</li>';return;}
   list.innerHTML=sortedFencers().map(f=>`<li class="fencer-row">
-    <div class="fencer-seed-cell"><span class="fsb ${f.seed!=null?'seeded':''}">${f.seed!=null?f.seed:'?'}</span></div>
-    <div class="fencer-info"><div class="fencer-name-t">${esc(f.name)}</div>${f.club?`<div class="fencer-club-t">${esc(f.club)}</div>`:''}</div>
+    <div class="fencer-seed-cell" onclick="openEditFencer('${f.id}')">
+      <span class="fsb ${f.seed!=null?'seeded':''}">${f.seed!=null?f.seed:'?'}</span>
+    </div>
+    <div class="fencer-info" onclick="openEditFencer('${f.id}')">
+      <div class="fencer-name-t">${esc(f.name)}</div>
+      ${f.club?`<div class="fencer-club-t">${esc(f.club)}</div>`:''}
+    </div>
     <button class="fencer-del" onclick="removeFencer('${f.id}')">×</button>
   </li>`).join('');
 }
 
-// ══════════════════════════════════════════════════════
-// DRAW GENERATION — snake + club separation
-// ══════════════════════════════════════════════════════
-function getLayout(n,pref) {
-  if(pref!=='auto'){const sz=parseInt(pref);return buildLayout(n,Math.max(1,Math.round(n/sz)));}
-  if(n<=7)return[n];
-  for(let p=Math.ceil(n/7);p<=Math.floor(n/5);p++){const b=Math.floor(n/p),e=n%p,mx=b+(e>0?1:0);if(b>=5&&mx<=7)return buildLayout(n,p);}
-  return buildLayout(n,Math.max(1,Math.round(n/6)));
+// ── DRAW GENERATION ──
+function getChosenLayout(n){
+  const layouts=allValidLayouts(n);
+  if(!layouts.length)return[n];
+  const chosen=layouts.find(l=>l.pools===selectedLayout)||layouts[0];
+  return chosen.sizes;
 }
-function buildLayout(n,pools){const b=Math.floor(n/pools),e=n%pools;return Array.from({length:pools},(_,i)=>b+(i<e?1:0));}
-function snakeAssign(seeds,layout){
-  const nP=layout.length,pools=Array.from({length:nP},(_,i)=>({name:`Poule ${i+1}`,fencers:[]}));
-  let left=true,col=0;
-  seeds.forEach(f=>{pools[left?col:nP-1-col].fencers.push(f.id);col++;if(col>=nP){col=0;left=!left;}});
+function snakeAssign(seeds,sizes){
+  const pools=sizes.map((_,i)=>({name:`Poule ${i+1}`,fencers:[]}));
+  const nP=sizes.length;let left=true,col=0;
+  seeds.forEach(f=>{
+    pools[left?col:nP-1-col].fencers.push(f.id);
+    col++;if(col>=nP){col=0;left=!left;}
+  });
   return pools;
 }
 function clubSeparate(draft,fencers){
   const fm=new Map(fencers.map(f=>[f.id,f]));
   function clashes(d){let c=0;d.forEach(p=>{const cl=p.fencers.map(id=>fm.get(id)?.club||'').filter(Boolean);for(let i=0;i<cl.length;i++)for(let j=i+1;j<cl.length;j++)if(cl[i]===cl[j])c++;});return c;}
-  let best=draft.map(p=>({...p,fencers:[...p.fencers]})),bestScore=clashes(best);
-  for(let i=0;i<300&&bestScore>0;i++){
+  let best=draft.map(p=>({...p,fencers:[...p.fencers]})),bs=clashes(best);
+  for(let i=0;i<300&&bs>0;i++){
     const pi=Math.floor(Math.random()*best.length),pj=Math.floor(Math.random()*best.length);if(pi===pj)continue;
     const fi=Math.floor(Math.random()*best[pi].fencers.length),fj=Math.floor(Math.random()*best[pj].fencers.length);
     const c=best.map(p=>({...p,fencers:[...p.fencers]}));
     [c[pi].fencers[fi],c[pj].fencers[fj]]=[c[pj].fencers[fj],c[pi].fencers[fi]];
-    const sc=clashes(c);if(sc<bestScore){best=c;bestScore=sc;}
+    const sc=clashes(c);if(sc<bs){best=c;bs=sc;}
   }
   return best;
 }
 function generateDraw(){
   S.compName=document.getElementById('comp-name').value.trim()||'Club Competition';
-  const pref=document.getElementById('pool-pref').value;
-  const sf=sortedFencers(),layout=getLayout(sf.length,pref);
-  S.draft=clubSeparate(snakeAssign(sf,layout),S.fencers);
+  const sf=sortedFencers();
+  const sizes=getChosenLayout(sf.length);
+  S.draft=clubSeparate(snakeAssign(sf,sizes),S.fencers);
   S.pools=null;S.de=null;S.deComplete=false;
   save();enableNav('draw');showScreen('draw');
 }
 
-// ══════════════════════════════════════════════════════
-// DRAW REVIEW
-// ══════════════════════════════════════════════════════
+// ── DRAW REVIEW ──
 function clashesIn(draft){
   const r=[];
   draft.forEach(p=>{const fcs=p.fencers.map(id=>({id,club:fById(id).club})).filter(f=>f.club);fcs.forEach((a,i)=>fcs.slice(i+1).forEach(b=>{if(a.club===b.club)r.push({pool:p.name,a:a.id,b:b.id,club:a.club});}));});
@@ -661,32 +708,48 @@ function renderDraw(){
   else clashWarn.style.display='none';
 }
 function reshuffleDraw(){
-  const sf=sortedFencers(),layout=getLayout(sf.length,document.getElementById('pool-pref').value);
-  S.draft=clubSeparate(snakeAssign(sf,layout),S.fencers);save();renderDraw();
+  const sf=sortedFencers(),sizes=getChosenLayout(sf.length);
+  S.draft=clubSeparate(snakeAssign(sf,sizes),S.fencers);save();renderDraw();
 }
 
-// ══════════════════════════════════════════════════════
-// BOUT ORDER (FIE)
-// ══════════════════════════════════════════════════════
-const FIE={3:[[0,1],[0,2],[1,2]],4:[[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]],5:[[0,1],[2,3],[0,4],[1,2],[3,4],[0,2],[1,4],[0,3],[2,4],[1,3]],6:[[0,1],[2,3],[4,5],[0,2],[3,5],[1,4],[0,5],[1,2],[3,4],[2,5],[0,3],[1,5],[2,4],[0,4],[1,3]],7:[[0,1],[2,3],[4,5],[0,6],[1,2],[3,4],[5,6],[0,3],[1,5],[2,6],[0,4],[1,6],[2,5],[3,6],[0,2],[4,6],[1,3],[2,4],[3,5],[0,5],[1,4]]};
+// ── BOUT ORDER (FIE standard) ──
+const FIE={
+  3:[[0,1],[0,2],[1,2]],
+  4:[[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]],
+  5:[[0,1],[2,3],[0,4],[1,2],[3,4],[0,2],[1,4],[0,3],[2,4],[1,3]],
+  6:[[0,1],[2,3],[4,5],[0,2],[3,5],[1,4],[0,5],[1,2],[3,4],[2,5],[0,3],[1,5],[2,4],[0,4],[1,3]],
+  7:[[0,1],[2,3],[4,5],[0,6],[1,2],[3,4],[5,6],[0,3],[1,5],[2,6],[0,4],[1,6],[2,5],[3,6],[0,2],[4,6],[1,3],[2,4],[3,5],[0,5],[1,4]],
+  8:[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,3],[1,2],[4,7],[5,6],[0,4],[1,5],[2,6],[3,7],[0,5],[1,4],[2,7],[3,6],[0,6],[1,7],[2,4],[3,5],[0,7],[1,6],[2,5],[3,4]],
+};
 function boutOrder(n){if(FIE[n])return FIE[n];const b=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)b.push([i,j]);return b;}
+
 function confirmDraw(){
   S.pools=S.draft.map(pool=>{
     const ord=boutOrder(pool.fencers.length);
-    return{id:uid(),name:pool.name,fencers:pool.fencers,bouts:ord.map(([a,b])=>({id:uid(),f1:pool.fencers[a],f2:pool.fencers[b],s1:null,s2:null,done:false}))};
+    return{id:uid(),name:pool.name,fencers:pool.fencers,
+      bouts:ord.map(([a,b])=>({id:uid(),f1:pool.fencers[a],f2:pool.fencers[b],s1:null,s2:null,done:false}))};
   });
   S.activePool=0;save();enableNav('poules');showScreen('poules');
 }
 
-// ══════════════════════════════════════════════════════
-// POULES
-// ══════════════════════════════════════════════════════
+// ── POULES ──
 function allDone(){return S.pools&&S.pools.every(p=>p.bouts.every(b=>b.done));}
 function poolStandings(pool){
   const st={};pool.fencers.forEach(id=>{st[id]={v:0,ts:0,tr:0};});
-  pool.bouts.filter(b=>b.done).forEach(b=>{st[b.f1].ts+=b.s1;st[b.f1].tr+=b.s2;st[b.f2].ts+=b.s2;st[b.f2].tr+=b.s1;if(b.s1>b.s2)st[b.f1].v++;else if(b.s2>b.s1)st[b.f2].v++;});
+  pool.bouts.filter(b=>b.done).forEach(b=>{
+    st[b.f1].ts+=b.s1;st[b.f1].tr+=b.s2;
+    st[b.f2].ts+=b.s2;st[b.f2].tr+=b.s1;
+    if(b.s1>b.s2)st[b.f1].v++;else if(b.s2>b.s1)st[b.f2].v++;
+  });
   const bo=pool.fencers.length-1;
-  return pool.fencers.map(id=>({id,...st[id],ind:st[id].ts-st[id].tr,bo})).sort((a,b)=>{const vpa=a.bo>0?a.v/a.bo:0,vpb=b.bo>0?b.v/b.bo:0;if(vpb!==vpa)return vpb-vpa;if(b.ind!==a.ind)return b.ind-a.ind;if(b.ts!==a.ts)return b.ts-a.ts;return fById(a.id).name.localeCompare(fById(b.id).name);});
+  return pool.fencers.map(id=>({id,...st[id],ind:st[id].ts-st[id].tr,bo}))
+    .sort((a,b)=>{
+      const vpa=a.bo>0?a.v/a.bo:0,vpb=b.bo>0?b.v/b.bo:0;
+      if(vpb!==vpa)return vpb-vpa;
+      if(b.ind!==a.ind)return b.ind-a.ind;
+      if(b.ts!==a.ts)return b.ts-a.ts;
+      return fById(a.id).name.localeCompare(fById(b.id).name);
+    });
 }
 function renderPoules(){
   const el=document.getElementById('poules-content');
@@ -694,142 +757,491 @@ function renderPoules(){
   const ap=S.activePool,pool=S.pools[ap];
   const doneBouts=pool.bouts.filter(b=>b.done).length,totalBouts=pool.bouts.length;
   const tabs=S.pools.map((p,i)=>{const done=p.bouts.every(b=>b.done);return`<button class="pool-tab ${i===ap?'active':''} ${done?'done':''}" onclick="switchPool(${i})">${esc(p.name)}${done?' ✓':''}</button>`;}).join('');
-  const boutList=pool.bouts.map((b,bi)=>{const f1=fById(b.f1),f2=fById(b.f2);return`<div class="bout-item ${b.done?'done':''}" onclick="openBout('poule',${ap},${bi},-1,-1)"><span class="bout-num">${bi+1}</span><div class="bout-names-col"><div class="bout-vs-text">${esc(f1.name)} <span style="color:var(--grey2)">vs</span> ${esc(f2.name)}</div>${b.done?`<div class="bout-result-text">${b.s1}–${b.s2} · ${b.s1>b.s2?esc(f1.name):b.s2>b.s1?esc(f2.name):'Draw'} wins</div>`:''}</div><span class="bout-check">${b.done?'✅':'▶'}</span></div>`;}).join('');
+  const boutList=pool.bouts.map((b,bi)=>{
+    const f1=fById(b.f1),f2=fById(b.f2);
+    return`<div class="bout-item ${b.done?'done':''}" onclick="openBout('poule',${ap},${bi},-1,-1)">
+      <span class="bout-num">${bi+1}</span>
+      <div class="bout-names-col">
+        <div class="bout-vs-text">${esc(f1.name)} <span style="color:var(--grey2)">vs</span> ${esc(f2.name)}</div>
+        ${b.done?`<div class="bout-result-text">${b.s1}–${b.s2} · ${b.s1>b.s2?esc(f1.name):b.s2>b.s1?esc(f2.name):'Draw'} wins</div>`:''}
+      </div>
+      <span class="bout-check">${b.done?'✅':'▶'}</span>
+    </div>`;
+  }).join('');
   const stands=poolStandings(pool);
-  const standHtml=`<table class="standings-tbl"><thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead><tbody>${stands.map((s,i)=>`<tr class="${i===0?'place-1':''}"><td><span class="place-circle">${i+1}</span></td><td><div style="font-weight:500;font-size:13px;">${esc(fById(s.id).name)}</div>${fById(s.id).club?`<div style="font-size:11px;color:var(--grey2)">${esc(fById(s.id).club)}</div>`:''}</td><td class="num" style="font-family:var(--mono)">${s.v}</td><td class="num" style="font-family:var(--mono)">${s.ts}</td><td class="num" style="font-family:var(--mono)">${s.tr}</td><td class="num" style="font-family:var(--mono);color:${s.ind>0?'var(--green)':s.ind<0?'var(--red)':'var(--grey2)'}">${s.ind>0?'+':''}${s.ind}</td></tr>`).join('')}</tbody></table>`;
-  const deSection=allDone()?(S.de?`<div style="padding:0 20px;"><button class="btn btn-ghost" onclick="showScreen('de')">Go to DE →</button></div>`:`<div style="padding:0 20px;"><button class="btn btn-accent" onclick="generateDE()">Generate DE Draw →</button></div>`):'';
-  el.innerHTML=`<div class="comp-bar"><span class="comp-bar-name">${esc(S.compName)}</span><span class="comp-bar-meta">${doneBouts}/${totalBouts} done</span></div><div class="pool-tab-bar">${tabs}</div><div style="padding:12px 20px 4px;"><span class="lbl">${esc(pool.name)} · ${pool.fencers.length} fencers · ${totalBouts} bouts</span></div><div style="padding:0 20px;">${boutList}</div><div style="padding:12px 20px 4px;"><span class="lbl">Standings</span></div><div style="margin:0 20px;" class="card">${standHtml}</div><div style="height:8px;"></div>${deSection}<div class="spacer"></div>`;
+  const standHtml=`<table class="standings-tbl">
+    <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
+    <tbody>${stands.map((s,i)=>`<tr class="${i===0?'place-1':''}">
+      <td><span class="place-circle">${i+1}</span></td>
+      <td><div style="font-weight:500;font-size:13px;">${esc(fById(s.id).name)}</div>${fById(s.id).club?`<div style="font-size:11px;color:var(--grey2)">${esc(fById(s.id).club)}</div>`:''}</td>
+      <td class="num" style="font-family:var(--mono)">${s.v}</td>
+      <td class="num" style="font-family:var(--mono)">${s.ts}</td>
+      <td class="num" style="font-family:var(--mono)">${s.tr}</td>
+      <td class="num" style="font-family:var(--mono);color:${s.ind>0?'var(--green)':s.ind<0?'var(--red)':'var(--grey2)'}">${s.ind>0?'+':''}${s.ind}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+  const deSection=allDone()
+    ?(S.de?`<div style="padding:0 20px;"><button class="btn btn-ghost" onclick="showScreen('de')">Go to DE →</button></div>`
+          :`<div style="padding:0 20px;"><button class="btn btn-accent" onclick="generateDE()">Generate DE Draw →</button></div>`)
+    :'';
+  el.innerHTML=`
+    <div class="comp-bar"><span class="comp-bar-name">${esc(S.compName)}</span><span class="comp-bar-meta">${doneBouts}/${totalBouts} done</span></div>
+    <div class="pool-tab-bar">${tabs}</div>
+    <div style="padding:12px 20px 4px;"><span class="lbl">${esc(pool.name)} · ${pool.fencers.length} fencers · ${totalBouts} bouts</span></div>
+    <div style="padding:0 20px;">${boutList}</div>
+    <div style="padding:12px 20px 4px;"><span class="lbl">Standings</span></div>
+    <div style="margin:0 20px;" class="card">${standHtml}</div>
+    <div style="height:8px;"></div>${deSection}<div style="height:20px;"></div>`;
 }
 function switchPool(i){S.activePool=i;renderPoules();}
 
-// ══════════════════════════════════════════════════════
-// BOUT MODAL
-// ══════════════════════════════════════════════════════
+// ── BOUT MODAL ──
 let AB=null,TS={s1:0,s2:0};
 function openBout(type,pi,bi,ri,mi){
   AB={type,pi,bi,ri,mi};
   let f1,f2,s1,s2,done,label,mx;
-  if(type==='poule'){const b=S.pools[pi].bouts[bi];f1=fById(b.f1);f2=fById(b.f2);s1=b.s1??0;s2=b.s2??0;done=b.done;mx=5;label=`${S.pools[pi].name} · Bout ${bi+1}`;}
-  else{const m=S.de.rounds[ri].matches[mi];f1=fById(m.top.fid);f2=fById(m.bot.fid);s1=m.top.score??0;s2=m.bot.score??0;done=m.winner!=null;mx=15;label=`${S.de.rounds[ri].name} · Match ${mi+1}`;}
+  if(type==='poule'){
+    const b=S.pools[pi].bouts[bi];f1=fById(b.f1);f2=fById(b.f2);
+    s1=b.s1??0;s2=b.s2??0;done=b.done;mx=5;label=`${S.pools[pi].name} · Bout ${bi+1}`;
+  }else{
+    const m=S.de.rounds[ri].matches[mi];f1=fById(m.top.fid);f2=fById(m.bot.fid);
+    s1=m.top.score??0;s2=m.bot.score??0;done=m.winner!=null;mx=15;label=`${S.de.rounds[ri].name} · Match ${mi+1}`;
+  }
   TS={s1,s2};
   document.getElementById('bout-modal-title').textContent=label;
   renderBoutModal(f1,f2,mx,done);openModal('bout-modal');
 }
+
 function renderBoutModal(f1,f2,mx,done){
   const{s1,s2}=TS,l1=s1>s2,l2=s2>s1;
-  document.getElementById('bout-modal-body').innerHTML=`<div class="score-grid"><div class="scorer-side"><div class="scorer-name">${esc(f1.name)}</div>${f1.club?`<div class="scorer-club">${esc(f1.club)}</div>`:''}<div class="score-num ${l1?'leading':''}">${s1}</div><div class="score-btns"><button class="sbtn sbtn-plus" onclick="adj(1,1,${mx})" ${s1>=mx?'disabled':''}>+</button><button class="sbtn sbtn-minus" onclick="adj(1,-1,${mx})" ${s1<=0?'disabled':''}>−</button></div></div><div class="vs-divider"><span class="vs-label">vs</span></div><div class="scorer-side"><div class="scorer-name">${esc(f2.name)}</div>${f2.club?`<div class="scorer-club">${esc(f2.club)}</div>`:''}<div class="score-num ${l2?'leading':''}">${s2}</div><div class="score-btns"><button class="sbtn sbtn-plus" onclick="adj(2,1,${mx})" ${s2>=mx?'disabled':''}>+</button><button class="sbtn sbtn-minus" onclick="adj(2,-1,${mx})" ${s2<=0?'disabled':''}>−</button></div></div></div>${s1===s2&&s1>0?'<div style="text-align:center;font-size:12px;color:var(--grey2);padding-top:4px;">Tied — confirm to record as draw</div>':''}`;
-  document.getElementById('bout-modal-actions').innerHTML=`<button class="btn btn-accent" onclick="confirmBout()">Confirm Result</button>${done?`<button class="btn btn-ghost btn-sm" onclick="clearBout()">Clear Result</button>`:''}<button class="btn btn-ghost btn-sm" onclick="closeModal('bout-modal')">Cancel</button>`;
+  document.getElementById('bout-modal-body').innerHTML=`
+    <div class="score-grid">
+      <div class="scorer-side">
+        <div class="scorer-name">${esc(f1.name)}</div>
+        ${f1.club?`<div class="scorer-club">${esc(f1.club)}</div>`:''}
+        <div class="score-num ${l1?'leading':''}" id="score-disp-1">${s1}</div>
+        <div class="score-btns">
+          <button class="sbtn sbtn-plus" onclick="adj(1,1,${mx})" ${s1>=mx?'disabled':''}>+</button>
+          <button class="sbtn sbtn-minus" onclick="adj(1,-1,${mx})" ${s1<=0?'disabled':''}>−</button>
+        </div>
+      </div>
+      <div class="vs-divider"><span class="vs-label">vs</span></div>
+      <div class="scorer-side">
+        <div class="scorer-name">${esc(f2.name)}</div>
+        ${f2.club?`<div class="scorer-club">${esc(f2.club)}</div>`:''}
+        <div class="score-num ${l2?'leading':''}" id="score-disp-2">${s2}</div>
+        <div class="score-btns">
+          <button class="sbtn sbtn-plus" onclick="adj(2,1,${mx})" ${s2>=mx?'disabled':''}>+</button>
+          <button class="sbtn sbtn-minus" onclick="adj(2,-1,${mx})" ${s2<=0?'disabled':''}>−</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:4px 8px 0;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--grey2);margin-bottom:6px;font-family:var(--mono);">Or type the final score directly:</div>
+    <div class="direct-score-row">
+      <input type="number" id="direct-s1" min="0" max="${mx}" value="${s1}" inputmode="numeric" onchange="directScore(1,${mx})" oninput="directScore(1,${mx})">
+      <div class="direct-score-divider">–</div>
+      <input type="number" id="direct-s2" min="0" max="${mx}" value="${s2}" inputmode="numeric" onchange="directScore(2,${mx})" oninput="directScore(2,${mx})">
+    </div></div>
+    ${s1===s2&&s1>0?'<div style="text-align:center;font-size:12px;color:var(--grey2);padding-top:8px;">Tied — confirm to record as draw</div>':''}`;
+  document.getElementById('bout-modal-actions').innerHTML=`
+    <button class="btn btn-accent" onclick="confirmBout()">Confirm Result</button>
+    ${done?`<button class="btn btn-ghost btn-sm" onclick="clearBout()">Clear Result</button>`:''}
+    <button class="btn btn-ghost btn-sm" onclick="closeModal('bout-modal')">Cancel</button>`;
 }
+
+function directScore(side,mx){
+  const el=document.getElementById('direct-s'+(side===1?'1':'2'));
+  let v=parseInt(el.value);
+  if(isNaN(v)||v<0)v=0;
+  if(v>mx)v=mx;
+  el.value=v;
+  if(side===1)TS.s1=v;else TS.s2=v;
+  // update the big display without full re-render
+  const d1=document.getElementById('score-disp-1');
+  const d2=document.getElementById('score-disp-2');
+  if(d1)d1.textContent=TS.s1;
+  if(d2)d2.textContent=TS.s2;
+  if(d1)d1.className='score-num '+(TS.s1>TS.s2?'leading':'');
+  if(d2)d2.className='score-num '+(TS.s2>TS.s1?'leading':'');
+}
+
 function adj(side,delta,mx){
-  if(side===1)TS.s1=Math.max(0,Math.min(mx,TS.s1+delta));else TS.s2=Math.max(0,Math.min(mx,TS.s2+delta));
+  if(side===1)TS.s1=Math.max(0,Math.min(mx,TS.s1+delta));
+  else TS.s2=Math.max(0,Math.min(mx,TS.s2+delta));
+  // sync direct inputs
+  const d1=document.getElementById('direct-s1');
+  const d2=document.getElementById('direct-s2');
+  if(d1)d1.value=TS.s1;
+  if(d2)d2.value=TS.s2;
   const{type,pi,bi,ri,mi}=AB;
   let f1,f2,done,mx2;
   if(type==='poule'){const b=S.pools[pi].bouts[bi];f1=fById(b.f1);f2=fById(b.f2);done=b.done;mx2=5;}
   else{const m=S.de.rounds[ri].matches[mi];f1=fById(m.top.fid);f2=fById(m.bot.fid);done=m.winner!=null;mx2=15;}
   renderBoutModal(f1,f2,mx2,done);
 }
+
 function confirmBout(){
   const{type,pi,bi,ri,mi}=AB;
-  if(type==='poule'){const b=S.pools[pi].bouts[bi];b.s1=TS.s1;b.s2=TS.s2;b.done=true;}
-  else{const m=S.de.rounds[ri].matches[mi];m.top.score=TS.s1;m.bot.score=TS.s2;m.winner=TS.s1>TS.s2?'top':TS.s2>TS.s1?'bot':null;if(m.winner)advanceWinner(ri,mi);}
+  if(type==='poule'){
+    const b=S.pools[pi].bouts[bi];b.s1=TS.s1;b.s2=TS.s2;b.done=true;
+  }else{
+    const m=S.de.rounds[ri].matches[mi];
+    m.top.score=TS.s1;m.bot.score=TS.s2;
+    m.winner=TS.s1>TS.s2?'top':TS.s2>TS.s1?'bot':null;
+    if(m.winner)advanceWinner(ri,mi);
+  }
   save();closeModal('bout-modal');
-  if(AB.type==='poule')renderPoules();else{S.deComplete=deDone();save();renderDE();}
+  if(AB.type==='poule')renderPoules();
+  else{S.deComplete=deDone();save();renderDE();}
 }
 function clearBout(){
   const{type,pi,bi}=AB;
   if(type==='poule'){const b=S.pools[pi].bouts[bi];b.s1=null;b.s2=null;b.done=false;}
-  save();closeModal('bout-modal');if(AB.type==='poule')renderPoules();else renderDE();
+  save();closeModal('bout-modal');
+  if(AB.type==='poule')renderPoules();else renderDE();
 }
 
-// ══════════════════════════════════════════════════════
-// DE
-// ══════════════════════════════════════════════════════
+// ── DE — FIXED bracket seeding ──
+// Standard tournament seeding: position 1 faces position n, 2 faces n-1, etc.
+// Uses the correct recursive interleaving so the bracket is balanced.
+function deSlots(size){
+  // Build the matchup order for a bracket of `size`
+  // Result: array of length `size`, where pairs [0,1],[2,3],... are first-round matches
+  // Seed 1 is at index 0, and its opponent (seed `size`) is at index 1, etc.
+  if(size===1)return[1];
+  if(size===2)return[1,2];
+  const half=size/2;
+  const top=deSlots(half);
+  const result=[];
+  // Each slot in the top half is paired with its complement (size+1 - seed)
+  top.forEach(s=>{
+    result.push(s);           // top seed goes first
+    result.push(size+1-s);   // bottom seed (complement) goes second
+  });
+  return result;
+}
+
+function rName(size){
+  if(size===2)return'Final';
+  if(size===4)return'Semi-Finals';
+  if(size===8)return'Quarter-Finals';
+  return`Round of ${size}`;
+}
+
 function overallStandings(){
   const all=[];
-  S.pools.forEach((p,pi)=>{poolStandings(p).forEach((s,place)=>{const bo=p.fencers.length-1;all.push({...s,poule:pi,place,vp:bo>0?s.v/bo:0});});});
-  all.sort((a,b)=>{if(b.vp!==a.vp)return b.vp-a.vp;if(b.ind!==a.ind)return b.ind-a.ind;if(b.ts!==a.ts)return b.ts-a.ts;return a.place-b.place;});
+  S.pools.forEach((p,pi)=>{
+    poolStandings(p).forEach((s,place)=>{
+      const bo=p.fencers.length-1;
+      all.push({...s,poule:pi,place,vp:bo>0?s.v/bo:0});
+    });
+  });
+  all.sort((a,b)=>{
+    if(b.vp!==a.vp)return b.vp-a.vp;
+    if(b.ind!==a.ind)return b.ind-a.ind;
+    if(b.ts!==a.ts)return b.ts-a.ts;
+    return a.place-b.place;
+  });
   return all;
 }
-function nextPow2(n){let p=1;while(p<n)p*=2;return p;}
-function deSlots(size){let s=[1,2];while(s.length<size){const g=s.length+1,n=[];s.forEach(x=>{n.push(x);n.push(g-x);});s=n;}return s;}
-function rName(size){if(size===2)return'Final';if(size===4)return'Semi-Finals';if(size===8)return'Quarter-Finals';return`Round of ${size}`;}
+
 function generateDE(){
-  const ranked=overallStandings().map(s=>s.id),n=ranked.length,size=nextPow2(n),slots=deSlots(size),r1=[];
-  for(let i=0;i<slots.length;i+=2){const ts=slots[i],bs=slots[i+1],tf=ts<=n?ranked[ts-1]:null,bf=bs<=n?ranked[bs-1]:null;const bye=!tf||!bf,winner=!tf?'bot':!bf?'top':null;r1.push({id:uid(),top:{fid:tf,score:null,seed:ts},bot:{fid:bf,score:null,seed:bs},winner:bye?winner:null,bye});}
-  const rounds=[{name:rName(size),matches:r1}];let prev=r1,rs=size/2;
-  while(rs>1){rs/=2;const nx=[];for(let i=0;i<prev.length;i+=2)nx.push({id:uid(),top:{fid:null,score:null,seed:null},bot:{fid:null,score:null,seed:null},winner:null,bye:false});rounds.push({name:rName(rs*2),matches:nx});prev=nx;}
-  r1.forEach((m,mi)=>{if(m.bye&&m.winner){const wfid=m.winner==='top'?m.top.fid:m.bot.fid,ws=m.winner==='top'?m.top.seed:m.bot.seed;propagate(rounds,0,mi,wfid,ws);}});
-  S.de={size,rounds};S.deComplete=false;save();enableNav('de');showScreen('de');
+  const ranked=overallStandings().map(s=>s.id);
+  const n=ranked.length;
+  let size=1;while(size<n)size*=2; // next power of 2
+
+  const slots=deSlots(size);
+  // slots is length `size`, pairs are [0,1],[2,3],...
+  const r1=[];
+  for(let i=0;i<slots.length;i+=2){
+    const topSeed=slots[i],botSeed=slots[i+1];
+    const tf=topSeed<=n?ranked[topSeed-1]:null;
+    const bf=botSeed<=n?ranked[botSeed-1]:null;
+    const bye=!tf||!bf;
+    const winner=!tf?'bot':!bf?'top':null;
+    r1.push({
+      id:uid(),
+      top:{fid:tf,score:null,seed:topSeed},
+      bot:{fid:bf,score:null,seed:botSeed},
+      winner:bye?winner:null,bye
+    });
+  }
+
+  // Build subsequent rounds
+  const rounds=[{name:rName(size),matches:r1}];
+  let prev=r1,rs=size/2;
+  while(rs>1){
+    rs/=2;
+    const nx=[];
+    for(let i=0;i<prev.length;i+=2){
+      nx.push({id:uid(),top:{fid:null,score:null,seed:null},bot:{fid:null,score:null,seed:null},winner:null,bye:false});
+    }
+    rounds.push({name:rName(rs*2),matches:nx});
+    prev=nx;
+  }
+
+  // Propagate byes
+  r1.forEach((m,mi)=>{
+    if(m.bye&&m.winner){
+      const wfid=m.winner==='top'?m.top.fid:m.bot.fid;
+      const wseed=m.winner==='top'?m.top.seed:m.bot.seed;
+      propagate(rounds,0,mi,wfid,wseed);
+    }
+  });
+
+  S.de={size,rounds};S.deComplete=false;
+  save();enableNav('de');showScreen('de');
 }
-function propagate(rounds,ri,mi,fid,seed){if(ri+1>=rounds.length)return;const next=rounds[ri+1].matches[Math.floor(mi/2)];if(!next)return;const slot=mi%2===0?'top':'bot';next[slot].fid=fid;next[slot].seed=seed;}
-function advanceWinner(ri,mi){const m=S.de.rounds[ri].matches[mi];if(!m.winner)return;const wfid=m.winner==='top'?m.top.fid:m.bot.fid,ws=m.winner==='top'?m.top.seed:m.bot.seed;propagate(S.de.rounds,ri,mi,wfid,ws);}
-function deDone(){if(!S.de)return false;const fin=S.de.rounds[S.de.rounds.length-1];return fin.matches.every(m=>m.winner!=null);}
+
+function propagate(rounds,ri,mi,fid,seed){
+  if(ri+1>=rounds.length)return;
+  const next=rounds[ri+1].matches[Math.floor(mi/2)];
+  if(!next)return;
+  const slot=mi%2===0?'top':'bot';
+  next[slot].fid=fid;next[slot].seed=seed;
+}
+function advanceWinner(ri,mi){
+  const m=S.de.rounds[ri].matches[mi];
+  if(!m.winner)return;
+  const wfid=m.winner==='top'?m.top.fid:m.bot.fid;
+  const wseed=m.winner==='top'?m.top.seed:m.bot.seed;
+  propagate(S.de.rounds,ri,mi,wfid,wseed);
+}
+function deDone(){
+  if(!S.de)return false;
+  const fin=S.de.rounds[S.de.rounds.length-1];
+  return fin.matches.every(m=>m.winner!=null);
+}
+
 function renderDE(){
   const el=document.getElementById('de-content');
   if(!S.de){el.innerHTML=`<div class="empty-state"><div class="ei">🏆</div><strong>No DE yet</strong>Complete all poule bouts first.</div>`;return;}
   const rounds=S.de.rounds;
   let champHtml='';
-  if(S.deComplete){const fin=rounds[rounds.length-1].matches[0];const cid=fin.winner==='top'?fin.top.fid:fin.bot.fid;const c=fById(cid);champHtml=`<div class="champion-card"><div class="champ-icon">🥇</div><div class="champ-lbl">Champion</div><div class="champ-name">${esc(c.name)}</div>${c.club?`<div class="champ-club">${esc(c.club)}</div>`:''}</div>`;}
+  if(S.deComplete){
+    const fin=rounds[rounds.length-1].matches[0];
+    const cid=fin.winner==='top'?fin.top.fid:fin.bot.fid;
+    const c=fById(cid);
+    champHtml=`<div class="champion-card"><div class="champ-icon">🥇</div><div class="champ-lbl">Champion</div><div class="champ-name">${esc(c.name)}</div>${c.club?`<div class="champ-club">${esc(c.club)}</div>`:''}</div>`;
+  }
   let curRi=-1,curMi=-1;
-  outer:for(let ri=0;ri<rounds.length;ri++)for(let mi=0;mi<rounds[ri].matches.length;mi++){const m=rounds[ri].matches[mi];if(!m.bye&&m.winner==null&&m.top.fid&&m.bot.fid){curRi=ri;curMi=mi;break outer;}}
+  outer:for(let ri=0;ri<rounds.length;ri++)
+    for(let mi=0;mi<rounds[ri].matches.length;mi++){
+      const m=rounds[ri].matches[mi];
+      if(!m.bye&&m.winner==null&&m.top.fid&&m.bot.fid){curRi=ri;curMi=mi;break outer;}
+    }
   let nextHtml='';
-  if(curRi>=0){const m=rounds[curRi].matches[curMi];const f1=fById(m.top.fid),f2=fById(m.bot.fid);nextHtml=`<div style="padding:12px 20px 4px;"><span class="lbl" style="color:var(--accent);">▶ Next bout · ${esc(rounds[curRi].name)}</span></div><div class="de-next-card"><div class="de-next-hd"><span class="de-next-lbl">${esc(rounds[curRi].name)}</span><span style="font-family:var(--mono);font-size:11px;color:var(--grey2);">Match ${curMi+1}</span></div><div class="de-matchup"><div class="de-fencer">${m.top.seed?`<div class="de-fencer-seed">Seed ${m.top.seed}</div>`:''}<div class="de-fencer-name">${esc(f1.name)}</div>${f1.club?`<div class="de-fencer-club">${esc(f1.club)}</div>`:''}</div><div class="de-vs">VS</div><div class="de-fencer">${m.bot.seed?`<div class="de-fencer-seed">Seed ${m.bot.seed}</div>`:''}<div class="de-fencer-name">${esc(f2.name)}</div>${f2.club?`<div class="de-fencer-club">${esc(f2.club)}</div>`:''}</div></div><div style="padding:0 16px 16px;"><button class="btn btn-accent" onclick="openBout('de',-1,-1,${curRi},${curMi})">▶ Enter Score</button></div></div>`;}
-  const cols=rounds.map((round,ri)=>{const gap=Math.pow(2,ri)*6;const cards=round.matches.map((m,mi)=>{const isCur=ri===curRi&&mi===curMi,isDone=m.winner!=null&&!m.bye;const slot=side=>{const fid=m[side].fid,f=fid?fById(fid):null,score=m[side].score,isW=m.winner===side;if(!fid&&m.bye)return`<div class="b-slot bye"><span class="b-seed"></span><span class="b-name">BYE</span></div>`;if(!fid)return`<div class="b-slot tbd"><span class="b-seed"></span><span class="b-name">TBD</span></div>`;return`<div class="b-slot ${isW?'winner':''}"><span class="b-seed">${m[side].seed||''}</span><span class="b-name">${esc(f?f.name.split(/\s+/).pop():'?')}</span>${score!=null?`<span class="b-score">${score}</span>`:''}</div>`;};const clickable=!m.bye&&m.top.fid&&m.bot.fid;return`<div class="b-match ${isCur?'current':''} ${isDone?'done':''}" ${clickable?`onclick="openBout('de',-1,-1,${ri},${mi})"`:''} ><div class="b-match-inner">${slot('top')}${slot('bot')}</div></div>`;}).join('');return`<div class="b-round"><div class="b-round-title">${esc(round.name)}</div><div class="b-col" style="gap:${gap}px;">${cards}</div></div>`;}).join('');
-  const completed=[];rounds.forEach(r=>r.matches.forEach((m)=>{if(m.winner&&!m.bye)completed.push({r,m});}));
-  const resultsHtml=completed.length?`<div style="padding:12px 20px 4px;"><span class="lbl">Results</span></div><div class="card" style="margin:0 20px;">${completed.map(({r,m})=>{const wf=fById(m.winner==='top'?m.top.fid:m.bot.fid),lf=fById(m.winner==='top'?m.bot.fid:m.top.fid),ws=m.winner==='top'?m.top.score:m.bot.score,ls=m.winner==='top'?m.bot.score:m.top.score;return`<div class="result-row"><div style="flex:1;"><div style="font-size:13px;font-weight:600;">${esc(wf.name)} <span style="color:var(--green)">wins</span></div><div style="font-size:11px;color:var(--grey2);margin-top:2px;font-family:var(--mono);">${esc(r.name)}${ws!=null?` · ${ws}–${ls} def. `:''}${esc(lf.name)}</div></div></div>`;}).join('')}</div>`:'';
-  el.innerHTML=`<div class="comp-bar"><span class="comp-bar-name">${esc(S.compName)}</span><span class="comp-bar-meta">DE · ${S.de.size}-player bracket</span></div>${champHtml}${nextHtml}<div style="padding:12px 20px 4px;"><span class="lbl">Bracket</span></div><div class="bracket-scroll"><div class="bracket-wrap">${cols}</div></div>${resultsHtml}<div class="spacer"></div>`;
+  if(curRi>=0){
+    const m=rounds[curRi].matches[curMi];
+    const f1=fById(m.top.fid),f2=fById(m.bot.fid);
+    nextHtml=`<div style="padding:12px 20px 4px;"><span class="lbl" style="color:var(--accent);">▶ Next bout · ${esc(rounds[curRi].name)}</span></div>
+    <div class="de-next-card">
+      <div class="de-next-hd"><span class="de-next-lbl">${esc(rounds[curRi].name)}</span><span style="font-family:var(--mono);font-size:11px;color:var(--grey2);">Match ${curMi+1}</span></div>
+      <div class="de-matchup">
+        <div class="de-fencer">${m.top.seed?`<div class="de-fencer-seed">Seed ${m.top.seed}</div>`:''}<div class="de-fencer-name">${esc(f1.name)}</div>${f1.club?`<div class="de-fencer-club">${esc(f1.club)}</div>`:''}</div>
+        <div class="de-vs">VS</div>
+        <div class="de-fencer">${m.bot.seed?`<div class="de-fencer-seed">Seed ${m.bot.seed}</div>`:''}<div class="de-fencer-name">${esc(f2.name)}</div>${f2.club?`<div class="de-fencer-club">${esc(f2.club)}</div>`:''}</div>
+      </div>
+      <div style="padding:0 16px 16px;"><button class="btn btn-accent" onclick="openBout('de',-1,-1,${curRi},${curMi})">▶ Enter Score</button></div>
+    </div>`;
+  }
+  const cols=rounds.map((round,ri)=>{
+    const gap=Math.pow(2,ri)*6;
+    const cards=round.matches.map((m,mi)=>{
+      const isCur=ri===curRi&&mi===curMi,isDone=m.winner!=null&&!m.bye;
+      const slot=side=>{
+        const fid=m[side].fid,f=fid?fById(fid):null,score=m[side].score,isW=m.winner===side;
+        if(!fid&&m.bye)return`<div class="b-slot bye"><span class="b-seed"></span><span class="b-name">BYE</span></div>`;
+        if(!fid)return`<div class="b-slot tbd"><span class="b-seed"></span><span class="b-name">TBD</span></div>`;
+        return`<div class="b-slot ${isW?'winner':''}"><span class="b-seed">${m[side].seed||''}</span><span class="b-name">${esc(f?f.name.split(/\s+/).pop():'?')}</span>${score!=null?`<span class="b-score">${score}</span>`:''}</div>`;
+      };
+      const clickable=!m.bye&&m.top.fid&&m.bot.fid;
+      return`<div class="b-match ${isCur?'current':''} ${isDone?'done':''}" ${clickable?`onclick="openBout('de',-1,-1,${ri},${mi})"`:''}>
+        <div class="b-match-inner">${slot('top')}${slot('bot')}</div></div>`;
+    }).join('');
+    return`<div class="b-round"><div class="b-round-title">${esc(round.name)}</div><div class="b-col" style="gap:${gap}px;">${cards}</div></div>`;
+  }).join('');
+  const completed=[];
+  rounds.forEach(r=>r.matches.forEach(m=>{if(m.winner&&!m.bye)completed.push({r,m});}));
+  const resultsHtml=completed.length?`<div style="padding:12px 20px 4px;"><span class="lbl">Results</span></div>
+    <div class="card" style="margin:0 20px;">${completed.map(({r,m})=>{
+      const wf=fById(m.winner==='top'?m.top.fid:m.bot.fid);
+      const lf=fById(m.winner==='top'?m.bot.fid:m.top.fid);
+      const ws=m.winner==='top'?m.top.score:m.bot.score;
+      const ls=m.winner==='top'?m.bot.score:m.top.score;
+      return`<div class="result-row"><div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;">${esc(wf.name)} <span style="color:var(--green)">wins</span></div>
+        <div style="font-size:11px;color:var(--grey2);margin-top:2px;font-family:var(--mono);">${esc(r.name)}${ws!=null?` · ${ws}–${ls} def. `:''}${esc(lf.name)}</div>
+      </div></div>`;
+    }).join('')}</div>`:'';
+  el.innerHTML=`<div class="comp-bar"><span class="comp-bar-name">${esc(S.compName)}</span><span class="comp-bar-meta">DE · ${S.de.size}-player bracket</span></div>
+    ${champHtml}${nextHtml}
+    <div style="padding:12px 20px 4px;"><span class="lbl">Bracket</span></div>
+    <div class="bracket-scroll"><div class="bracket-wrap">${cols}</div></div>
+    ${resultsHtml}<div style="height:20px;"></div>`;
 }
 
-// ══════════════════════════════════════════════════════
-// MODALS & RESET
-// ══════════════════════════════════════════════════════
+// ── RESULTS SCREEN ──
+function renderResults(){
+  const el=document.getElementById('results-content');
+  const hasData=S.pools||S.de;
+  if(!hasData){
+    el.innerHTML=`<div class="empty-state"><div class="ei">📋</div><strong>No results yet</strong>Results will appear here as the competition progresses. This page updates automatically.</div>`;
+    return;
+  }
+
+  // Champion banner
+  let champHtml='';
+  if(S.deComplete&&S.de){
+    const fin=S.de.rounds[S.de.rounds.length-1].matches[0];
+    if(fin&&fin.winner){
+      const cid=fin.winner==='top'?fin.top.fid:fin.bot.fid;
+      const c=fById(cid);
+      champHtml=`<div class="champion-card"><div class="champ-icon">🥇</div><div class="champ-lbl">Champion</div><div class="champ-name">${esc(c.name)}</div>${c.club?`<div class="champ-club">${esc(c.club)}</div>`:''}</div>`;
+    }
+  }
+
+  // Overall poule standings (if poules exist)
+  let poolsHtml='';
+  if(S.pools){
+    // Overall combined standings
+    const allStands=[];
+    S.pools.forEach((p,pi)=>{
+      poolStandings(p).forEach((s,place)=>{
+        const bo=p.fencers.length-1;
+        allStands.push({...s,pool:p.name,vp:bo>0?s.v/bo:0,place});
+      });
+    });
+    allStands.sort((a,b)=>{
+      if(b.vp!==a.vp)return b.vp-a.vp;
+      if(b.ind!==a.ind)return b.ind-a.ind;
+      if(b.ts!==a.ts)return b.ts-a.ts;
+      return a.place-b.place;
+    });
+
+    const overallRows=allStands.map((s,i)=>{
+      const f=fById(s.id);
+      return`<tr class="${i===0?'place-1':''}">
+        <td><span class="place-circle">${i+1}</span></td>
+        <td>
+          <div style="font-weight:500;font-size:13px;">${esc(f.name)}</div>
+          ${f.club?`<div style="font-size:11px;color:var(--grey2)">${esc(f.club)}</div>`:''}
+          <div style="font-size:10px;color:var(--grey2);font-family:var(--mono);margin-top:1px;">${esc(s.pool)}</div>
+        </td>
+        <td class="num" style="font-family:var(--mono)">${s.v}</td>
+        <td class="num" style="font-family:var(--mono)">${s.ts}</td>
+        <td class="num" style="font-family:var(--mono)">${s.tr}</td>
+        <td class="num" style="font-family:var(--mono);color:${s.ind>0?'var(--green)':s.ind<0?'var(--red)':'var(--grey2)'}">${s.ind>0?'+':''}${s.ind}</td>
+      </tr>`;
+    }).join('');
+
+    const donePools=S.pools.filter(p=>p.bouts.every(b=>b.done)).length;
+    const totalPools=S.pools.length;
+
+    poolsHtml=`
+      <div class="results-section"><span class="lbl">Poule Standings <span style="color:var(--grey2);font-weight:400;">${donePools}/${totalPools} complete</span></span></div>
+      <div class="results-pool-card">
+        <table class="standings-tbl">
+          <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
+          <tbody>${overallRows}</tbody>
+        </table>
+      </div>
+
+      <div class="results-section" style="margin-top:8px;"><span class="lbl">By Poule</span></div>
+      ${S.pools.map(p=>{
+        const stands=poolStandings(p);
+        const done=p.bouts.filter(b=>b.done).length;
+        const rows=stands.map((s,i)=>{
+          const f=fById(s.id);
+          return`<tr class="${i===0?'place-1':''}">
+            <td><span class="place-circle">${i+1}</span></td>
+            <td><div style="font-weight:500;font-size:13px;">${esc(f.name)}</div>${f.club?`<div style="font-size:11px;color:var(--grey2)">${esc(f.club)}</div>`:''}</td>
+            <td class="num" style="font-family:var(--mono)">${s.v}</td>
+            <td class="num" style="font-family:var(--mono)">${s.ts}</td>
+            <td class="num" style="font-family:var(--mono)">${s.tr}</td>
+            <td class="num" style="font-family:var(--mono);color:${s.ind>0?'var(--green)':s.ind<0?'var(--red)':'var(--grey2)'}">${s.ind>0?'+':''}${s.ind}</td>
+          </tr>`;
+        }).join('');
+        return`<div class="results-pool-card">
+          <div class="results-pool-hd">
+            <span class="results-pool-title">${esc(p.name)}</span>
+            <span class="results-pool-meta">${done}/${p.bouts.length} bouts</span>
+          </div>
+          <table class="standings-tbl">
+            <thead><tr><th></th><th>Name</th><th class="num">V</th><th class="num">TS</th><th class="num">TR</th><th class="num">Ind</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>`;
+      }).join('')}`;
+  }
+
+  // DE results
+  let deHtml='';
+  if(S.de){
+    const completed=[];
+    S.de.rounds.forEach(r=>r.matches.forEach(m=>{if(m.winner&&!m.bye)completed.push({r,m});}));
+    if(completed.length){
+      deHtml=`<div class="results-section" style="margin-top:8px;"><span class="lbl">Direct Elimination Results</span></div>
+        <div class="results-pool-card">
+          ${completed.map(({r,m})=>{
+            const wf=fById(m.winner==='top'?m.top.fid:m.bot.fid);
+            const lf=fById(m.winner==='top'?m.bot.fid:m.top.fid);
+            const ws=m.winner==='top'?m.top.score:m.bot.score;
+            const ls=m.winner==='top'?m.bot.score:m.top.score;
+            return`<div class="de-result-row">
+              <span class="de-result-round">${esc(r.name)}</span>
+              <div style="flex:1;">
+                <div class="de-result-winner">${esc(wf.name)} <span style="color:var(--green)">wins</span></div>
+                <div class="de-result-score">${ws!=null?`${ws}–${ls} def. `:''}${esc(lf.name)}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
+  }
+
+  el.innerHTML=`
+    <div class="comp-bar"><span class="comp-bar-name">${esc(S.compName)}</span><span class="comp-bar-meta">Live Results</span></div>
+    ${champHtml}${poolsHtml}${deHtml}
+    <div style="height:20px;"></div>`;
+}
+
+// ── MODALS & RESET ──
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 function confirmReset(){openModal('reset-modal');}
 async function doReset(){
   S={compName:'',fencers:[],draft:null,pools:null,de:null,deComplete:false,screen:'setup',activePool:0};
+  selectedLayout=null;
   ['draw','poules','de'].forEach(n=>{const b=document.getElementById('nav-'+n);if(b)b.disabled=true;});
   closeModal('reset-modal');
   await save();
   showScreen('setup');renderSetup();
 }
 
-// ══════════════════════════════════════════════════════
-// EVENT LISTENERS & INIT
-// ══════════════════════════════════════════════════════
+// ── EVENT LISTENERS ──
 document.getElementById('new-name').addEventListener('keydown',e=>{if(e.key==='Enter')addFencer();});
 document.getElementById('new-seed').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('new-name').focus();});
 document.getElementById('comp-name').addEventListener('input',e=>{S.compName=e.target.value;});
 
-// On load: if we have a stored URL, try to connect automatically
-window.addEventListener('load', async () => {
+// ── INIT ──
+window.addEventListener('load',async()=>{
   loadFromCache();
-  if (backendUrl) {
-    document.getElementById('backend-url-input').value = backendUrl;
+  enableNav('results');
+  if(backendUrl){
+    document.getElementById('backend-url-input').value=backendUrl;
     setSyncStatus('busy','Connecting…');
-    try {
-      const resp = await fetch(backendUrl + '?action=read&t=' + Date.now());
-      const json = await resp.json();
-      if (json.ok && json.state) {
-        Object.assign(S, json.state);
-        lastStateHash = stateHash(S);
-      }
-      syncNavState();
-      showScreen(S.screen || 'setup');
-      startPolling();
-      setSyncStatus('ok','');
-    } catch(e) {
+    try{
+      const resp=await fetch(backendUrl+'?action=read&t='+Date.now());
+      const json=await resp.json();
+      if(json.ok&&json.state){Object.assign(S,json.state);lastStateHash=stateHash(S);}
+      syncNavState();showScreen(S.screen||'setup');startPolling();setSyncStatus('ok','');
+    }catch(e){
       setSyncStatus('err','Offline — using cached data');
-      syncNavState();
-      showScreen(S.screen || 'setup');
-      // Still start polling in case connection recovers
-      startPolling();
+      syncNavState();showScreen(S.screen||'setup');startPolling();
     }
-  } else {
-    // No URL stored — show connection screen
-    showScreen('connect');
-  }
+  }else{showScreen('connect');}
 });
 </script>
 </body>
