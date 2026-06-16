@@ -584,7 +584,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 'use strict';
 const DEFAULT_BACKEND_URL='https://script.google.com/macros/s/AKfycbw53Agv21AQGF6JdsS8J_c2QLvIXsv2BH3f2zVmECGxeTy9juyA0jdLe_CH9fljbgRQ/exec';
 const URL_KEY='fence_backend_url';
-const POLL_INTERVAL=3000;
+const POLL_INTERVAL=5000;
 let backendUrl=localStorage.getItem(URL_KEY)||DEFAULT_BACKEND_URL;
 let pollTimer=null;
 let lastStateHash='';
@@ -635,6 +635,17 @@ async function pushState(logMsg){
       competitionId=json.id;
       localStorage.setItem('fence_comp_id',competitionId);
     }
+    // If backend returned a merged state (race condition resolved), apply it
+    if(json.mergedState){
+      const merged=json.mergedState;
+      const currentScreen=S.screen;
+      const currentPool=S.activePool;
+      S=merged;
+      S.screen=currentScreen;
+      S.activePool=currentPool;
+      localStorage.setItem('fence_state_cache',JSON.stringify(S));
+      rerenderCurrentScreen();
+    }
     lastStateHash=stateHash(S);
     _pendingSave=false;
     if(_saveRetryTimer){clearTimeout(_saveRetryTimer);_saveRetryTimer=null;}
@@ -663,9 +674,22 @@ async function save(logMsg){
   },800);
 }
 
+// Force an immediate write, bypassing the debounce. Use before navigating
+// away from setup or generating the draw so nothing is left pending.
+async function flushSave(logMsg){
+  localStorage.setItem('fence_state_cache',JSON.stringify(S));
+  if(_saveDebounceTimer){clearTimeout(_saveDebounceTimer);_saveDebounceTimer=null;}
+  _pendingSave=true;
+  await pushState(logMsg||'flush');
+}
+
 async function pollState(){
   const url=spectatorMode?watchUrl:backendUrl;
   if(!url||isSyncing)return;
+  // Pause polling when tab is backgrounded (saves backend calls)
+  if(document.hidden)return;
+  // Pause polling while entering a score — avoids disrupting input
+  if(document.getElementById('bout-modal').classList.contains('open'))return;
   isSyncing=true;
   try{
     const idParam=spectatorCompId?`&id=${encodeURIComponent(spectatorCompId)}`:(competitionId?`&id=${encodeURIComponent(competitionId)}`:'');
@@ -676,6 +700,14 @@ async function pollState(){
     if(!remote){isSyncing=false;return;}
     const rh=stateHash(remote);
     if(rh!==lastStateHash){
+      // CRITICAL: never let an incoming poll overwrite local state while this
+      // device has edits that haven't finished saving to the backend yet.
+      // Without this, rapidly editing names / moving fencers between poules on
+      // the draw screen would "revert" as a poll pulls the older backend copy
+      // mid-debounce. The pending write will push our version up shortly.
+      if(!spectatorMode&&(_pendingSave||_saveDebounceTimer||_saveRetryTimer)){
+        isSyncing=false;return;
+      }
       lastStateHash=rh;
       const openScreen=S.screen;
       S=remote;
@@ -693,7 +725,14 @@ function stateHash(s){
   const{compName,fencers,draft,pools,de,deComplete}=s||{};
   return JSON.stringify({compName,fencers,draft,pools,de,deComplete});
 }
-function startPolling(){if(pollTimer)clearInterval(pollTimer);pollTimer=setInterval(pollState,POLL_INTERVAL);}
+function startPolling(){
+  if(pollTimer)clearInterval(pollTimer);
+  pollTimer=setInterval(pollState,POLL_INTERVAL);
+}
+// Poll immediately when returning to the app
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&pollTimer)pollState();
+});
 
 function loadFromCache(){try{const r=localStorage.getItem('fence_state_cache');if(r)Object.assign(S,JSON.parse(r));}catch(e){}}
 
@@ -1063,7 +1102,7 @@ function clubSeparate(draft,fencers){
   }
   return best;
 }
-function generateDraw(){
+async function generateDraw(){
   S.compName=document.getElementById('comp-name').value.trim()||'Club Competition';
   const sf=fencersForDraw();
   const sizes=getChosenLayout(sf.length);
@@ -1083,7 +1122,7 @@ function generateDraw(){
   }
   // Mark this device as organiser for this competition
   localStorage.setItem('fence_organiser_'+competitionId,'1');
-  save();enableNav('draw');
+  await flushSave('draw generated');enableNav('draw');
   // Show both PINs to organiser
   const srv=document.getElementById('pin-reveal-value');
   const orv=document.getElementById('pin-reveal-org-value');
@@ -1364,17 +1403,38 @@ function confirmBout(){
     if(errDiv){errDiv.style.display='block';}
     return;
   }
+  const now=Date.now();
   if(type==='poule'){
-    const b=S.pools[pi].bouts[bi];b.s1=TS.s1;b.s2=TS.s2;b.done=true;
+    const b=S.pools[pi].bouts[bi];b.s1=TS.s1;b.s2=TS.s2;b.done=true;b.editedAt=now;
   }else{
     const m=S.de.rounds[ri].matches[mi];
+    // Warn if editing a completed bout that has downstream results
+    if(m.winner!=null&&hasDownstreamResults(ri,mi)){
+      if(!confirm('This bout already has a result and later rounds may depend on it. Changing it could make the bracket inconsistent. Continue?')){
+        return;
+      }
+    }
     m.top.score=TS.s1;m.bot.score=TS.s2;
     m.winner=TS.s1>TS.s2?'top':TS.s2>TS.s1?'bot':null;
+    m.editedAt=now;
     if(m.winner)advanceWinner(ri,mi);
   }
   save();closeModal('bout-modal');
   if(AB.type==='poule')renderPoules();
   else{S.deComplete=deDone();save();renderDE();}
+}
+
+// Check whether a DE match has results in later rounds that depend on it
+function hasDownstreamResults(ri,mi){
+  if(!S.de)return false;
+  let checkRi=ri+1,checkMi=Math.floor(mi/2);
+  while(checkRi<S.de.rounds.length){
+    const m=S.de.rounds[checkRi].matches[checkMi];
+    if(m&&m.winner!=null)return true;
+    checkMi=Math.floor(checkMi/2);
+    checkRi++;
+  }
+  return false;
 }
 function clearBout(){
   const{type,pi,bi}=AB;
